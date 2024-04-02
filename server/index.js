@@ -6,7 +6,7 @@ const generatePDF = require("./src/utils/pdfGenerator.js");
 
 const app = express();
 app.use(bodyParser.json());
-const port = 5050;
+const port = 5000;
 
 app.get("/", (req, res) => {
   res.send("Hello worldd\n");
