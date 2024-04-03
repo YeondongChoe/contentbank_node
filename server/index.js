@@ -12,10 +12,10 @@ app.get("/", (req, res) => {
   res.send("Hello world\n");
 });
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", true);
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Credentials", true);
+//   next();
+// });
 
 app.use(
   cors({
@@ -63,6 +63,7 @@ app.post("/get-pdf", async (req, res) => {
 
   // PDF를 클라이언트로 전송
   res.contentType("application/pdf");
+  res.header("Access-Control-Allow-Credentials", true);
   res.send(pdfBuffer);
 });
 
