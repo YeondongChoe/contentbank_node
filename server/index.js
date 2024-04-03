@@ -12,25 +12,33 @@ app.get("/", (req, res) => {
   res.send("Hello world\n");
 });
 
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "http://210.124.177.36:3000",
+//       "http://localhost:3000",
+//       "https://j-dev01.dreamonesys.co.kr",
+//     ],
+//     credentials: true,
+//   })
+// );
 
 // 메소드 및 헤더 허용 설정
 app.options("*", cors());
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000/"); // 클라이언트의 주소
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header(
+app.use((req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*"); // 클라이언트의 주소
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
-  res.header("Access-Control-Allow-Credentials", true);
-  next();
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  res.end();
 });
 
 app.set("view engine", "ejs");
