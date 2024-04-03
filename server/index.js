@@ -12,6 +12,11 @@ app.get("/", (req, res) => {
   res.send("Hello world\n");
 });
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
 app.use(
   cors({
     origin: [
@@ -22,11 +27,6 @@ app.use(
     credentials: true,
   })
 );
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", true);
-  next();
-});
 
 // 메소드 및 헤더 허용 설정
 //app.options("*", cors());
