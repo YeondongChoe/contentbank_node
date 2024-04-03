@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // 클라이언트의 주소로 변경
+    origin: "http://210.124.177.36:5050",
     credentials: true,
   })
 );
