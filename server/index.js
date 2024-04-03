@@ -15,10 +15,23 @@ app.get("/", (req, res) => {
 app.use(
   cors({
     origin: "*",
-    methods: "GET,POST",
-    allowedHeaders: "Content-Type",
+    credentials: true,
   })
 );
+
+// 메소드 및 헤더 허용 설정
+app.options("*", cors());
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // 클라이언트의 주소
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 app.set("view engine", "ejs");
 
