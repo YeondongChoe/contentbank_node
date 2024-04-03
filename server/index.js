@@ -23,6 +23,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
 // 메소드 및 헤더 허용 설정
 //app.options("*", cors());
 
