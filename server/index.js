@@ -9,13 +9,14 @@ app.use(bodyParser.json());
 const port = 5000;
 
 app.get("/", (req, res) => {
-  res.send("Hello worldd\n");
+  res.send("Hello world\n");
 });
 
 app.use(
   cors({
     origin: "*",
-    credentials: true,
+    methods: "GET,POST",
+    allowedHeaders: "Content-Type",
   })
 );
 
