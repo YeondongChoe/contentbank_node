@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 // 메소드 및 헤더 허용 설정
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // 허용할 origin을 설정
+  res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
