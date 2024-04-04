@@ -13,17 +13,19 @@ app.get("/", (req, res) => {
 });
 
 // 메소드 및 헤더 허용 설정
-app.options("*", cors());
-
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // 실제 요청이 온 origin을 설정
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   res.header("Access-Control-Allow-Credentials", true);
-  next();
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200); // Preflight 요청에 대한 응답
+  } else {
+    next();
+  }
 });
 
 // app.use(
