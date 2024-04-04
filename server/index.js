@@ -16,6 +16,8 @@ app.get("/", (req, res) => {
 //   res.header("Access-Control-Allow-Credentials", true);
 //   next();
 // });
+app.options("*", cors());
+
 app.use(
   cors({
     origin: [
@@ -24,6 +26,8 @@ app.use(
       "https://j-dev01.dreamonesys.co.kr",
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -64,7 +68,8 @@ app.post("/get-pdf", async (req, res) => {
   // PDF를 클라이언트로 전송
   res.contentType("application/pdf");
   res.header("Access-Control-Allow-Credentials", true);
-  res.send(data);
+  res.send("Hello world\n");
+  //res.send(pdfBuffer);
 });
 
 app.listen(port, () => {
