@@ -12,13 +12,21 @@ app.get("/", (req, res) => {
   res.send("Hello world\n");
 });
 
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Credentials", true);
-//   next();
-// });
+// 메소드 및 헤더 허용 설정
+app.options("*", cors());
 
-// app.options(
-//   "*",
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
+// app.use(
 //   cors({
 //     origin: [
 //       "http://210.124.177.36:3000",
@@ -30,39 +38,6 @@ app.get("/", (req, res) => {
 //     allowedHeaders: ["Content-Type", "Authorization"],
 //   })
 // );
-
-app.options("*", cors());
-
-app.use(
-  cors({
-    origin: [
-      "http://210.124.177.36:3000",
-      "http://localhost:3000",
-      "https://j-dev01.dreamonesys.co.kr",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-// 메소드 및 헤더 허용 설정
-//app.options("*", cors());
-
-// app.use((req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*"); // 클라이언트의 주소
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, PUT, DELETE, OPTIONS"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   res.setHeader("Access-Control-Allow-Credentials", true);
-
-//   res.end();
-// });
 
 app.set("view engine", "ejs");
 
@@ -82,7 +57,6 @@ app.post("/get-pdf", async (req, res) => {
 
   // PDF를 클라이언트로 전송
   res.contentType("application/pdf");
-  res.header("Access-Control-Allow-Credentials", true);
   res.send("Hello world\n");
   //res.send(pdfBuffer);
 });
