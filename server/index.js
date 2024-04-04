@@ -16,7 +16,6 @@ app.get("/", (req, res) => {
 //   res.header("Access-Control-Allow-Credentials", true);
 //   next();
 // });
-
 app.use(
   cors({
     origin: [
@@ -50,6 +49,7 @@ app.set("view engine", "ejs");
 
 app.post("/get-pdf", async (req, res) => {
   const { title, content, column } = req.body;
+  console.log(req.body);
   // 데이터 및 CSS 스타일
 
   const data = {
@@ -64,7 +64,7 @@ app.post("/get-pdf", async (req, res) => {
   // PDF를 클라이언트로 전송
   res.contentType("application/pdf");
   res.header("Access-Control-Allow-Credentials", true);
-  res.send(pdfBuffer);
+  res.send(data);
 });
 
 app.listen(port, () => {
