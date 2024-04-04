@@ -16,30 +16,45 @@ app.get("/", (req, res) => {
 //   res.header("Access-Control-Allow-Credentials", true);
 //   next();
 // });
-app.options("*", cors());
 
-app.use(
+app.options(
+  "*",
   cors({
-    origin: function (origin, callback) {
-      // 요청이 허용할 origin인지 확인합니다.
-      if (
-        [
-          "http://210.124.177.36:3000",
-          "http://localhost:3000",
-          "https://j-dev01.dreamonesys.co.kr",
-        ].indexOf(origin) !== -1 ||
-        !origin
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: [
+      "http://210.124.177.36:3000",
+      "http://localhost:3000",
+      "https://j-dev01.dreamonesys.co.kr",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// app.options("*", cors());
+
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       // 요청이 허용할 origin인지 확인합니다.
+//       if (
+//         [
+//           "http://210.124.177.36:3000",
+//           "http://localhost:3000",
+//           "https://j-dev01.dreamonesys.co.kr",
+//         ].indexOf(origin) !== -1 ||
+//         !origin
+//       ) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
 // 메소드 및 헤더 허용 설정
 //app.options("*", cors());
