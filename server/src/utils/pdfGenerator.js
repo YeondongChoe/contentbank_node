@@ -90,6 +90,10 @@ async function generatePDF(data) {
           column === 1
             ? `<div class="center">
                  ${content}
+                 ${content}
+                 ${content}
+                 ${content}
+                 ${content}
                </div>`
             : `<div class="left">
                 ${content}
