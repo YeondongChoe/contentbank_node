@@ -60,7 +60,6 @@ app.set("view engine", "ejs");
 
 app.post("/get-pdf", async (req, res) => {
   const { title, content, column } = req.body;
-  console.log(content);
   // 데이터 및 CSS 스타일
   const data = {
     title: title,
