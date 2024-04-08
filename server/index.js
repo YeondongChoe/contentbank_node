@@ -12,22 +12,6 @@ app.get("/", (req, res) => {
   res.send("Hello world\n");
 });
 
-// 메소드 및 헤더 허용 설정
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   res.header("Access-Control-Allow-Credentials", true);
-//   if (req.method === "OPTIONS") {
-//     res.sendStatus(200); // Preflight 요청에 대한 응답
-//   } else {
-//     next();
-//   }
-// });
-
 // 모든 요청에 대해 CORS 미들웨어 적용
 app.use(
   cors({
@@ -56,12 +40,28 @@ app.options("*", (req, res) => {
 //   })
 // );
 
+// 메소드 및 헤더 허용 설정
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   res.header("Access-Control-Allow-Credentials", true);
+//   if (req.method === "OPTIONS") {
+//     res.sendStatus(200); // Preflight 요청에 대한 응답
+//   } else {
+//     next();
+//   }
+// });
+
 app.set("view engine", "ejs");
 
 app.post("/get-pdf", async (req, res) => {
   const { title, content, column } = req.body;
+  console.log(content);
   // 데이터 및 CSS 스타일
-
   const data = {
     title: title,
     content: content,
