@@ -88,7 +88,7 @@ async function generatePDF(data) {
         <div class="viewer">
         ${
           column === 1
-            ? `<div class="center">
+            ? `<div class="center" style= "display: flex; flex-direction: column;">
                  ${content}
                  ${content}
                  ${content}
