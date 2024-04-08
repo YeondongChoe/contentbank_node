@@ -13,48 +13,35 @@ app.get("/", (req, res) => {
 });
 
 // 모든 요청에 대해 CORS 미들웨어 적용
-app.use(
-  cors({
-    origin: true, // 실제 요청이 온 origin을 허용
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-    credentials: true, // 자격 증명 허용
-  })
-);
-
-// Preflight 요청에 대한 응답 처리
-app.options("*", (req, res) => {
-  res.sendStatus(200);
-});
-
 // app.use(
 //   cors({
-//     origin: [
-//       "http://210.124.177.36:3000",
-//       "http://localhost:3000",
-//       "https://j-dev01.dreamonesys.co.kr",
-//     ],
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
+//     origin: true, // 실제 요청이 온 origin을 허용
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+//     credentials: true, // 자격 증명 허용
 //   })
 // );
 
-// 메소드 및 헤더 허용 설정
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   res.header("Access-Control-Allow-Credentials", true);
-//   if (req.method === "OPTIONS") {
-//     res.sendStatus(200); // Preflight 요청에 대한 응답
-//   } else {
-//     next();
-//   }
+// Preflight 요청에 대한 응답 처리
+// app.options("*", (req, res) => {
+//   res.sendStatus(200);
 // });
+
+//메소드 및 헤더 허용 설정
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin); // 실제 요청이 온 origin을 설정
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200); // Preflight 요청에 대한 응답
+  } else {
+    next();
+  }
+});
 
 app.set("view engine", "ejs");
 
@@ -79,6 +66,19 @@ app.post("/get-pdf", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// app.use(
+//   cors({
+//     origin: [
+//       "http://210.124.177.36:3000",
+//       "http://localhost:3000",
+//       "https://j-dev01.dreamonesys.co.kr",
+//     ],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
 //mathjax는 TeX외에 다른 형태는 지원하지 못함 '\\frac{1}{x^2-1}'
 // app.get("/get-math", (req, res) => {
