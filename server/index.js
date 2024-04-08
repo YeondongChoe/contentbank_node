@@ -15,11 +15,7 @@ app.get("/", (req, res) => {
 // 모든 요청에 대해 CORS 미들웨어 적용
 app.use(
   cors({
-    origin: [
-      "http://210.124.177.36:3000",
-      "http://localhost:3000",
-      "https://j-dev01.dreamonesys.co.kr",
-    ], // 실제 요청이 온 origin을 허용
+    origin: true, // 실제 요청이 온 origin을 허용
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
     credentials: true, // 자격 증명 허용
