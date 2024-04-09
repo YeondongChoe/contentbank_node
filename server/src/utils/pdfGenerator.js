@@ -13,7 +13,13 @@ const AllPackages =
 // MathJax 설정
 const adaptor = liteAdaptor();
 RegisterHTMLHandler(adaptor);
-const tex = new TeX({ packages: AllPackages });
+const tex = new TeX({
+  packages: AllPackages,
+  displayMath: [["$$", "$$"]], // 디스플레이 수식을 $$로 지정
+  inlineMath: [["$", "$"]], // 인라인 수식을 $로 지정
+  processEscapes: true, // 이스케이프 문자 처리를 활성화
+  processEnvironments: true, // 환경 처리를 활성화
+});
 const svg = new SVG({ fontCache: "none" });
 const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
 
@@ -71,11 +77,11 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  const htmlString = convertedEquation.toString();
+  const htmlString = convertedEquation.document.body.innerHTML;
   //console.log(content);
   //console.log(convertedEquation);
   //console.log(convertedEquation.children[0]);
-  //console.log(htmlString);
+  console.log(htmlString);
 
   const htmlContent = ejs.render(
     `
@@ -115,13 +121,13 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${content}
+                 ${htmlString}
                </div>`
             : `<div class="left">
-                 ${content}
+                 ${htmlString}
                </div>
                <div class="right">
-                 ${content}
+                 ${htmlString}
                </div>`
         }
         </div>
