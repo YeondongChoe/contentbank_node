@@ -71,10 +71,11 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  const htmlString = convertedEquation.children[0].toString();
+  const htmlString = convertedEquation.children[0].toMarkup();
   //console.log(content);
   //console.log(convertedEquation);
-  console.log(htmlString.toString());
+  console.log(convertedEquation.children[0]);
+  console.log(htmlString);
 
   const htmlContent = ejs.render(
     `
