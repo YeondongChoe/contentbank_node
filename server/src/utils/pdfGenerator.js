@@ -97,11 +97,9 @@ async function generatePDF(data) {
                </div>`
             : `<div class="left">
                 ${content}
-                ${contentElement.innerHTML} 
                </div>
                <div class="right">
                  ${content}
-                 ${contentElement.innerHTML} 
                </div>`
         }
         </div>
