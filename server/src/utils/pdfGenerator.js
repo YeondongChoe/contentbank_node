@@ -76,15 +76,30 @@ async function generatePDF(data) {
     }
   `;
 
+  const findActualSVGNode = (node) => {
+    // node가 실제 SVG 노드인지 확인합니다.
+    if (node.kind === "svg") {
+      return node;
+    }
+
+    // node가 LiteElement이고 children을 가지고 있다면,
+    // 그 children 중에서 실제 SVG 노드를 찾습니다.
+    if (node.children && node.children.length > 0) {
+      for (const child of node.children) {
+        const actualSVGNode = findActualSVGNode(child);
+        if (actualSVGNode) {
+          return actualSVGNode;
+        }
+      }
+    }
+
+    // 실제 SVG 노드를 찾지 못한 경우에는 null을 반환합니다.
+    return null;
+  };
+
   const convertedEquation = await htmlConverter.convert(content);
-  const svgNode = convertedEquation.children.find(
-    (child) => child.kind === "svg"
-  ).children[0].children[0].children[0];
-  //const htmlString = convertedEquation.document.body.innerHTML;
-  //console.log(content);
-  console.log(svgNode);
-  //console.log(convertedEquation.children[0]);
-  //console.log(htmlString);
+  const actualSVGNode = findActualSVGNode(convertedEquation);
+  console.log(actualSVGNode);
 
   const htmlContent = ejs.render(
     `
