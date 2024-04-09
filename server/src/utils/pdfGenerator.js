@@ -112,17 +112,17 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${convertedEquation}
-                 ${convertedEquation}
-                 ${convertedEquation}
-                 ${convertedEquation}
-                 ${convertedEquation}
+                 ${convertedEquation.content}
+                 ${convertedEquation.content}
+                 ${convertedEquation.content}
+                 ${convertedEquation.content}
+                 ${convertedEquation.content}
                </div>`
             : `<div class="left">
-                ${convertedEquation}
+                ${convertedEquation.content}
                </div>
                <div class="right">
-                 ${convertedEquation}
+                 ${convertedEquation.content}
                </div>`
         }
         </div>
