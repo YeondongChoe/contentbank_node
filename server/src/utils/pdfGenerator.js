@@ -71,8 +71,8 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  console.log(content);
-  console.log(convertedEquation);
+  //console.log(content);
+  //console.log(convertedEquation);
 
   const htmlContent = ejs.render(
     `
@@ -132,7 +132,6 @@ async function generatePDF(data) {
   `,
     data
   );
-  console.log(data);
 
   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   const page = await browser.newPage();
