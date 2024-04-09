@@ -21,7 +21,7 @@ async function generatePDF(data) {
   const title = data.title;
   const content = data.content;
   const column = data.column;
-  console.log(data);
+  //console.log(data);
 
   const cssStyles = `
     @page {
@@ -71,7 +71,7 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  //console.log(content);
+  console.log(content);
   //console.log(convertedEquation);
 
   const htmlContent = ejs.render(
