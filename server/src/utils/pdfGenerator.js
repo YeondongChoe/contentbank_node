@@ -71,8 +71,8 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  console.log(content);
-  //console.log(convertedEquation);
+  //console.log(content);
+  console.log(convertedEquation);
 
   const htmlContent = ejs.render(
     `
