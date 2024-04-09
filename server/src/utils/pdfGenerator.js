@@ -53,6 +53,7 @@ async function generatePDF(data) {
     }
   `;
 
+  const convertedEquation = content;
   const html = ejs.render(
     `
     <!DOCTYPE html>
@@ -60,6 +61,8 @@ async function generatePDF(data) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       <!-- CSS 스타일 적용 -->
       <style>
         ${cssStyles}
@@ -89,17 +92,17 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${content}
-                 ${content}
-                 ${content}
-                 ${content}
-                 ${content}
+                 ${convertedEquation}
+                 ${convertedEquation}
+                 ${convertedEquation}
+                 ${convertedEquation}
+                 ${convertedEquation}
                </div>`
             : `<div class="left">
-                ${content}
+                ${convertedEquation}
                </div>
                <div class="right">
-                 ${content}
+                 ${convertedEquation}
                </div>`
         }
         </div>
