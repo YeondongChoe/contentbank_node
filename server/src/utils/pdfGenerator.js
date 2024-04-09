@@ -99,8 +99,12 @@ async function generatePDF(data) {
 
   const convertedEquation = await htmlConverter.convert(content);
   const actualSVGNode = findActualSVGNode(convertedEquation);
-  const svgString = actualSVGNode.toString();
-  console.log(svgString);
+  //const svgString = actualSVGNode.toString();
+  const containerDiv = document.createElement("div");
+  containerDiv.appendChild(actualSVGNode.toNode());
+  document.body.appendChild(containerDiv);
+  console.log(actualSVGNode.toNode());
+  console.log(containerDiv);
 
   const htmlContent = ejs.render(
     `
