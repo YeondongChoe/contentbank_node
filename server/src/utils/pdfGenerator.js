@@ -77,11 +77,12 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
+  const svgNode = convertedEquation.children[0];
   //const htmlString = convertedEquation.document.body.innerHTML;
   //console.log(content);
-  console.log(convertedEquation);
+  console.log(svgNode);
   //console.log(convertedEquation.children[0]);
-  console.log(htmlString);
+  //console.log(htmlString);
 
   const htmlContent = ejs.render(
     `
@@ -121,13 +122,13 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${content}
+                 ${svgNode}
                </div>`
             : `<div class="left">
-                 ${content}
+                 ${svgNode}
                </div>
                <div class="right">
-                 ${content}
+                 ${svgNode}
                </div>`
         }
         </div>
