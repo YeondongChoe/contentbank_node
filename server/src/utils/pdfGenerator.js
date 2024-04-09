@@ -71,11 +71,11 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  //const htmlString = convertedEquation.children[0].toSVG();
+  const htmlString = convertedEquation.children[0].outerHTML;
   //console.log(content);
   //console.log(convertedEquation);
-  console.log(convertedEquation.children[0]);
-  //console.log(htmlString);
+  //console.log(convertedEquation.children[0]);
+  console.log(htmlString);
 
   const htmlContent = ejs.render(
     `
