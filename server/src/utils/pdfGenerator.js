@@ -75,7 +75,7 @@ async function generatePDF(data) {
   //console.log(content);
   //console.log(convertedEquation);
   //console.log(convertedEquation.children[0]);
-  console.log(htmlString);
+  //console.log(htmlString);
 
   const htmlContent = ejs.render(
     `
@@ -115,17 +115,13 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${htmlString}
-                 ${htmlString}
-                 ${htmlString}
-                 ${htmlString} 
-                 ${htmlString}
+                 ${content}
                </div>`
             : `<div class="left">
-                 ${htmlString}
+                 ${content}
                </div>
                <div class="right">
-                 ${htmlString}
+                 ${content}
                </div>`
         }
         </div>
