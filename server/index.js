@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 const port = 5000;
 
 app.get("/", (req, res) => {
-  res.send("Hello world\n");
+  res.send("Hello world");
 });
 
 // 모든 요청에 대해 CORS 미들웨어 적용
@@ -59,7 +59,6 @@ app.post("/get-pdf", async (req, res) => {
 
   // PDF를 클라이언트로 전송
   res.contentType("application/pdf");
-  //res.send("Hello world\n");
   res.send(pdfBuffer);
 });
 

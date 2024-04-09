@@ -53,6 +53,34 @@ async function generatePDF(data) {
     }
   `;
 
+  const mathJaxScript = document.createElement("script");
+  mathJaxScript.type = "text/javascript";
+  mathJaxScript.async = true;
+  mathJaxScript.onload = function () {
+    // MathJax가 로드된 후에 실행될 콜백 함수
+    MathJax.typesetPromise()
+      .then(() => {
+        // 수식이 성공적으로 렌더링된 후에 실행될 코드
+        console.log("MathJax typesetting complete");
+      })
+      .catch((err) => {
+        // 수식 렌더링 중에 오류가 발생한 경우 처리할 코드
+        console.error("MathJax typesetting error:", err);
+      });
+  };
+  mathJaxScript.src =
+    "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+
+  // Body에 MathJax 스크립트 추가
+  document.body.appendChild(mathJaxScript);
+
+  // 데이터에서 수식을 가져와 LaTeX로 변환 후 HTML에 삽입
+  const contentElement = document.getElementById("content");
+  contentElement.innerHTML = data.content; // 데이터에서 HTML 형식의 수식을 가져옴
+
+  // 수식을 MathJax로 처리하도록 명령
+  MathJax.typeset([contentElement]);
+
   const html = ejs.render(
     `
     <!DOCTYPE html>
@@ -97,9 +125,11 @@ async function generatePDF(data) {
                </div>`
             : `<div class="left">
                 ${content}
+                ${contentElement.innerHTML} 
                </div>
                <div class="right">
                  ${content}
+                 ${contentElement.innerHTML} 
                </div>`
         }
         </div>
