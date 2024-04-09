@@ -79,7 +79,7 @@ async function generatePDF(data) {
   const convertedEquation = await htmlConverter.convert(content);
   const svgNode = convertedEquation.children.find(
     (child) => child.kind === "svg"
-  );
+  ).children[0];
   //const htmlString = convertedEquation.document.body.innerHTML;
   //console.log(content);
   console.log(svgNode);
