@@ -139,13 +139,13 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${svgNode}
+                 ${actualSVGNode}
                </div>`
             : `<div class="left">
-                 ${svgNode}
+                 ${actualSVGNode}
                </div>
                <div class="right">
-                 ${svgNode}
+                 ${actualSVGNode}
                </div>`
         }
         </div>
