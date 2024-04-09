@@ -1,5 +1,21 @@
 const ejs = require("ejs");
 const puppeteer = require("puppeteer");
+const mathjax = require("mathjax-full/js/mathjax.js").mathjax;
+const TeX = require("mathjax-full/js/input/tex.js").TeX;
+const SVG = require("mathjax-full/js/output/svg.js").SVG;
+const liteAdaptor =
+  require("mathjax-full/js/adaptors/liteAdaptor.js").liteAdaptor;
+const RegisterHTMLHandler =
+  require("mathjax-full/js/handlers/html.js").RegisterHTMLHandler;
+const AllPackages =
+  require("mathjax-full/js/input/tex/AllPackages.js").AllPackages;
+
+// MathJax 설정
+const adaptor = liteAdaptor();
+RegisterHTMLHandler(adaptor);
+const tex = new TeX({ packages: AllPackages });
+const svg = new SVG({ fontCache: "none" });
+const html = mathjax.document("", { InputJax: tex, OutputJax: svg });
 
 async function generatePDF(data) {
   const title = data.title;
@@ -53,7 +69,8 @@ async function generatePDF(data) {
     }
   `;
 
-  const convertedEquation = content;
+  const convertedEquation = await html.convert(content);
+
   const html = ejs.render(
     `
     <!DOCTYPE html>
