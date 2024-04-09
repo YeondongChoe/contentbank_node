@@ -71,7 +71,7 @@ async function generatePDF(data) {
   `;
 
   const convertedEquation = await htmlConverter.convert(content);
-  const htmlString = convertedEquation.children[0].toCommonHTML();
+  const htmlString = convertedEquation.toString();
   //console.log(content);
   //console.log(convertedEquation);
   //console.log(convertedEquation.children[0]);
