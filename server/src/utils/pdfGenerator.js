@@ -15,7 +15,7 @@ const adaptor = liteAdaptor();
 RegisterHTMLHandler(adaptor);
 const tex = new TeX({ packages: AllPackages });
 const svg = new SVG({ fontCache: "none" });
-const html = mathjax.document("", { InputJax: tex, OutputJax: svg });
+const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
 
 async function generatePDF(data) {
   const title = data.title;
@@ -69,9 +69,9 @@ async function generatePDF(data) {
     }
   `;
 
-  const convertedEquation = await html.convert(content);
+  const convertedEquation = await htmlConverter.convert(content);
 
-  const html = ejs.render(
+  const htmlContent = ejs.render(
     `
     <!DOCTYPE html>
     <html lang="en">
@@ -132,7 +132,7 @@ async function generatePDF(data) {
 
   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   const page = await browser.newPage();
-  await page.setContent(html);
+  await page.setContent(htmlContent);
 
   const pdfBuffer = await page.pdf();
 
