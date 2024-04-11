@@ -100,7 +100,7 @@ async function generatePDF(data) {
   const convertedEquation = await htmlConverter.convert(content);
   const actualSVGNode = findActualSVGNode(convertedEquation);
   const svgString = adaptor.innerHTML(actualSVGNode);
-  const svgStringg = adaptor.outerHTMLHTML(svgString);
+  const svgStringg = adaptor.outerHTML(svgString);
 
   console.log(svgStringg);
 
