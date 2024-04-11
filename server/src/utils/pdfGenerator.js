@@ -11,8 +11,8 @@ const puppeteer = require("puppeteer");
 //   require("mathjax-full/js/input/tex/AllPackages.js").AllPackages;
 
 // MathJax 설정
-//const adaptor = liteAdaptor();
-//RegisterHTMLHandler(adaptor);
+// const adaptor = liteAdaptor();
+// RegisterHTMLHandler(adaptor);
 // const tex = new TeX({
 //   packages: AllPackages,
 //   displayMath: [["$$", "$$"]], // 디스플레이 수식을 $$로 지정
@@ -20,14 +20,13 @@ const puppeteer = require("puppeteer");
 //   processEscapes: true, // 이스케이프 문자 처리를 활성화
 //   processEnvironments: true, // 환경 처리를 활성화
 // });
-//const svg = new SVG({ fontCache: "none" });
-//const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
+// const svg = new SVG({ fontCache: "none" });
+// const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
 
 async function generatePDF(data) {
   const title = data.title;
   const content = data.content;
   const column = data.column;
-  //console.log(data);
 
   const cssStyles = `
     @page {
@@ -97,11 +96,9 @@ async function generatePDF(data) {
   //   return null;
   // };
 
-  //const convertedEquation = await htmlConverter.convert(content);
-  //const actualSVGNode = findActualSVGNode(convertedEquation);
-  //const svgString = adaptor.innerHTML(actualSVGNode);
-
-  //console.log(svgString);
+  // const convertedEquation = await htmlConverter.convert(content);
+  // const actualSVGNode = findActualSVGNode(convertedEquation);
+  // const svgString = adaptor.innerHTML(actualSVGNode);
 
   const htmlContent = ejs.render(
     `
