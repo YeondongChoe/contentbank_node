@@ -98,10 +98,10 @@ async function generatePDF(data) {
   };
 
   const convertedEquation = await htmlConverter.convert(content);
-  const actualSVGNode = findActualSVGNode(convertedEquation);
-  const svgString = adaptor.doctype() + adaptor.outerHTML(actualSVGNode);
+  //const actualSVGNode = findActualSVGNode(convertedEquation);
+  //const svgString = adaptor.innerHTML(actualSVGNode);
 
-  console.log(svgString);
+  //console.log(svgString);
 
   const htmlContent = ejs.render(
     `
@@ -141,13 +141,13 @@ async function generatePDF(data) {
         ${
           column === 1
             ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${svgString}
+                 ${content}
                </div>`
             : `<div class="left">
-                 ${svgString}
+                 ${content}
                </div>
                <div class="right">
-                 ${svgString}
+                 ${content}
                </div>`
         }
         </div>
