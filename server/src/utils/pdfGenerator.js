@@ -1,27 +1,27 @@
 const ejs = require("ejs");
 const puppeteer = require("puppeteer");
-const mathjax = require("mathjax-full/js/mathjax.js").mathjax;
-const TeX = require("mathjax-full/js/input/tex.js").TeX;
-const SVG = require("mathjax-full/js/output/svg.js").SVG;
-const liteAdaptor =
-  require("mathjax-full/js/adaptors/liteAdaptor.js").liteAdaptor;
-const RegisterHTMLHandler =
-  require("mathjax-full/js/handlers/html.js").RegisterHTMLHandler;
-const AllPackages =
-  require("mathjax-full/js/input/tex/AllPackages.js").AllPackages;
+// const mathjax = require("mathjax-full/js/mathjax.js").mathjax;
+// const TeX = require("mathjax-full/js/input/tex.js").TeX;
+// const SVG = require("mathjax-full/js/output/svg.js").SVG;
+// const liteAdaptor =
+//   require("mathjax-full/js/adaptors/liteAdaptor.js").liteAdaptor;
+// const RegisterHTMLHandler =
+//   require("mathjax-full/js/handlers/html.js").RegisterHTMLHandler;
+// const AllPackages =
+//   require("mathjax-full/js/input/tex/AllPackages.js").AllPackages;
 
 // MathJax 설정
-const adaptor = liteAdaptor();
-RegisterHTMLHandler(adaptor);
-const tex = new TeX({
-  packages: AllPackages,
-  displayMath: [["$$", "$$"]], // 디스플레이 수식을 $$로 지정
-  inlineMath: [["$", "$"]], // 인라인 수식을 $로 지정
-  processEscapes: true, // 이스케이프 문자 처리를 활성화
-  processEnvironments: true, // 환경 처리를 활성화
-});
-const svg = new SVG({ fontCache: "none" });
-const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
+//const adaptor = liteAdaptor();
+//RegisterHTMLHandler(adaptor);
+// const tex = new TeX({
+//   packages: AllPackages,
+//   displayMath: [["$$", "$$"]], // 디스플레이 수식을 $$로 지정
+//   inlineMath: [["$", "$"]], // 인라인 수식을 $로 지정
+//   processEscapes: true, // 이스케이프 문자 처리를 활성화
+//   processEnvironments: true, // 환경 처리를 활성화
+// });
+//const svg = new SVG({ fontCache: "none" });
+//const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
 
 async function generatePDF(data) {
   const title = data.title;
