@@ -69,8 +69,8 @@ app.post("/get-pdf", async (req, res) => {
   });
 
   // PDF를 클라이언트로 전송
-  //res.contentType("application/pdf");
-  // res.send(pdfBuffer);
+  res.contentType("application/pdf");
+  res.send(pdfBuffer);
 });
 
 app.listen(port, () => {
