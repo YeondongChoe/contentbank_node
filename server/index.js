@@ -62,6 +62,7 @@ app.post("/get-pdf", async (req, res) => {
     if (err) {
       console.error("파일 저장 중 오류 발생:", err);
       res.status(500).send("파일 저장 중 오류가 발생했습니다.");
+      console.log(__dirname);
     } else {
       console.log("파일이 성공적으로 저장되었습니다:", filePath);
       res.send("파일이 성공적으로 저장되었습니다.");
