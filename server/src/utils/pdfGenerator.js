@@ -97,7 +97,7 @@ async function generatePDF(data) {
     return null;
   };
 
-  const convertedEquation = await htmlConverter.convert(content);
+  //const convertedEquation = await htmlConverter.convert(content);
   //const actualSVGNode = findActualSVGNode(convertedEquation);
   //const svgString = adaptor.innerHTML(actualSVGNode);
 
