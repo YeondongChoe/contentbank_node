@@ -57,12 +57,13 @@ app.post("/get-pdf", async (req, res) => {
   // PDF 생성 모듈 호출
   const pdfBuffer = await generatePDF(data);
 
-  const filePath = "/usr/share/nginx/html/CB/수학문제.pdf";
+  const filePath = "/app/수학문제.pdf";
   fs.writeFile(filePath, pdfBuffer, (err) => {
     if (err) {
       console.error("파일 저장 중 오류 발생:", err);
       res.status(500).send("파일 저장 중 오류가 발생했습니다.");
       console.log(__dirname);
+      // /app
     } else {
       console.log("파일이 성공적으로 저장되었습니다:", filePath);
       res.send("파일이 성공적으로 저장되었습니다.");
@@ -70,8 +71,8 @@ app.post("/get-pdf", async (req, res) => {
   });
 
   // PDF를 클라이언트로 전송
-  //res.contentType("application/pdf");
-  //res.send(pdfBuffer);
+  // res.contentType("application/pdf");
+  // res.send(pdfBuffer);
 });
 
 app.listen(port, () => {
