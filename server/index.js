@@ -57,7 +57,7 @@ app.post("/get-pdf", async (req, res) => {
   // PDF 생성 모듈 호출
   const pdfBuffer = await generatePDF(data);
 
-  const filePath = "/usr/share/nginx/html/CB/수학문제test.pdf";
+  const filePath = "/usr/share/nginx/html/CB/worksheettest.pdf";
   fs.writeFile(filePath, pdfBuffer, (err) => {
     if (err) {
       console.error("파일 저장 중 오류 발생:", err);
