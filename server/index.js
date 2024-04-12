@@ -53,11 +53,21 @@ app.post("/get-pdf", async (req, res) => {
     content: content,
     column: column,
   };
+  // 파일 저장할 디렉토리 경로
+  const uploadDir = "/usr/share/nginx/html/CB";
+
+  // 디렉토리가 존재하지 않으면 생성
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
 
   // PDF 생성 모듈 호출
   const pdfBuffer = await generatePDF(data);
 
-  const filePath = "/usr/share/nginx/html/CB/worksheettest.pdf";
+  // 파일 저장 경로
+  const filePath = `${uploadDir}/worksheettest.pdf`;
+
+  // 파일 저장
   fs.writeFile(filePath, pdfBuffer, (err) => {
     if (err) {
       console.error("파일 저장 중 오류 발생:", err);
