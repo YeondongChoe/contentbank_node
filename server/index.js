@@ -25,8 +25,12 @@ httpsServer.on("request", (req, res) => {
   });
   req.pipe(proxy, { end: true });
 });
-httpServer.listen(5051, () => {});
-httpsServer.listen(5050, () => {});
+httpServer.listen(5051, () => {
+  console.log(`Server is running on port 5051`);
+});
+httpsServer.listen(5050, () => {
+  console.log(`Server is running on port 5050`);
+});
 
 app.use(bodyParser.json());
 const port = 5000;
