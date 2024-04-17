@@ -33,6 +33,7 @@ let Location = "";
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 httpsServer.on("request", (req, res) => {
   console.log(Location);
+  console.log("s");
   res.writeHead(301, { Location: `http://${req.headers.host}${req.url}` });
   console.log(Location);
   res.end();
