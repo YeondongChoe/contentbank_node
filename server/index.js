@@ -16,7 +16,7 @@ const httpsServer = https.createServer({}, app);
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 httpsServer.on("request", (req, res) => {
   const proxy = http.request({
-    host: "localhost",
+    host: "http://210.124.177.36",
     port: 5051,
     path: req.url,
     method: req.method,
