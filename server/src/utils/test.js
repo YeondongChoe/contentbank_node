@@ -54,7 +54,7 @@ while (currentQuestionIndex < questions.length) {
       leftHtml += questionHtml;
     }
     totalHeight += questionHeight;
-    console.log((totalHeight += questionHeight));
+    // console.log((totalHeight += questionHeight));
 
     // 1600 이후의 문항을 exceededQuestions 배열에 추가
     if (totalHeight + questionHeight >= 1800) {
