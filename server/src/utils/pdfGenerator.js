@@ -1,32 +1,21 @@
 const ejs = require("ejs");
 const puppeteer = require("puppeteer");
-// const mathjax = require("mathjax-full/js/mathjax.js").mathjax;
-// const TeX = require("mathjax-full/js/input/tex.js").TeX;
-// const SVG = require("mathjax-full/js/output/svg.js").SVG;
-// const liteAdaptor =
-//   require("mathjax-full/js/adaptors/liteAdaptor.js").liteAdaptor;
-// const RegisterHTMLHandler =
-//   require("mathjax-full/js/handlers/html.js").RegisterHTMLHandler;
-// const AllPackages =
-//   require("mathjax-full/js/input/tex/AllPackages.js").AllPackages;
-
-// MathJax 설정
-// const adaptor = liteAdaptor();
-// RegisterHTMLHandler(adaptor);
-// const tex = new TeX({
-//   packages: AllPackages,
-//   displayMath: [["$$", "$$"]], // 디스플레이 수식을 $$로 지정
-//   inlineMath: [["$", "$"]], // 인라인 수식을 $로 지정
-//   processEscapes: true, // 이스케이프 문자 처리를 활성화
-//   processEnvironments: true, // 환경 처리를 활성화
-// });
-// const svg = new SVG({ fontCache: "none" });
-// const htmlConverter = mathjax.document("", { InputJax: tex, OutputJax: svg });
 
 async function generatePDF(data) {
   const title = data.title;
-  const content = data.content;
-  const column = data.column;
+  // 가져온 문제 데이터 예시
+  const questions = [
+    { id: 1, content: data.content },
+    { id: 2, content: data.content },
+    { id: 3, content: data.content },
+    { id: 4, content: data.content },
+    { id: 5, content: data.content },
+    { id: 6, content: data.content },
+    { id: 7, content: data.content },
+    { id: 8, content: data.content },
+    { id: 9, content: data.content },
+    { id: 10, content: data.content },
+  ];
 
   const cssStyles = `
     @page {
@@ -39,6 +28,8 @@ async function generatePDF(data) {
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
+      min-height: 1000px;
+      margin-bottom: 10px;
     }
     .header {
       display: flex;
@@ -74,47 +65,12 @@ async function generatePDF(data) {
       padding: 20px;
     }
   `;
+  let currentPage = 1; // 현재 페이지
+  let pageHtml = ""; // 페이지 HTML 초기화
+  let pages = []; // 각 페이지의 HTML을 저장할 배열
 
-  // const findActualSVGNode = (node) => {
-  //   // node가 실제 SVG 노드인지 확인합니다.
-  //   if (node.kind === "svg") {
-  //     return node;
-  //   }
-
-  //   // node가 LiteElement이고 children을 가지고 있다면,
-  //   // 그 children 중에서 실제 SVG 노드를 찾습니다.
-  //   if (node.children && node.children.length > 0) {
-  //     for (const child of node.children) {
-  //       const actualSVGNode = findActualSVGNode(child);
-  //       if (actualSVGNode) {
-  //         return actualSVGNode;
-  //       }
-  //     }
-  //   }
-
-  //   // 실제 SVG 노드를 찾지 못한 경우에는 null을 반환합니다.
-  //   return null;
-  // };
-
-  // const convertedEquation = await htmlConverter.convert(content);
-  // const actualSVGNode = findActualSVGNode(convertedEquation);
-  // const svgString = adaptor.innerHTML(actualSVGNode);
-
-  const htmlContent = ejs.render(
-    `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- CSS 스타일 적용 -->
-      <style>
-        ${cssStyles}
-      </style>
-    </head>
-    <body>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  if (currentPage === 1) {
+    pageHtml += `
       <div class="page">
         <div class="header">
           <div class="headerLeft">
@@ -133,23 +89,86 @@ async function generatePDF(data) {
               <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
             </div>
           </div>
-        </div>
-        <div class="viewer">
-        ${
-          column === 1
-            ? `<div class="center" style= "display: flex; flex-direction: column;">
-                 ${content}
-               </div>`
-            : `<div class="left">
-                 ${content}
-               </div>
-               <div class="right">
-                 ${content}
-               </div>`
+        </div>`;
+  }
+
+  pageHtml += '<div class="viewer" style="height: 950px;">';
+  let totalHeight = 0;
+  let questionHeight = 200;
+  let questionsBefore1800 = []; // 1800 이전의 문제를 담을 배열
+  let exceededQuestions = []; // 1800을 초과한 문제를 담을 배열
+
+  let leftHtml = ""; // 좌측에 표시할 HTML 문자열
+  let rightHtml = ""; // 우측에 표시할 HTML 문자열
+
+  questions.forEach((question) => {
+    if (totalHeight + questionHeight < 1800) {
+      questionsBefore1800.push(question);
+      console.log(questionsBefore1800);
+      totalHeight += questionHeight; // 높이 추가
+    } else {
+      exceededQuestions.push(question); // 초과한 문제 추가
+    }
+
+    totalHeight = 0;
+    if (questionsBefore1800) {
+      questionsBefore1800.forEach((question, index) => {
+        const questionHtml = `<div class="left">문제 ${question.id}. ${question.content}</div>`;
+        if (totalHeight + questionHeight >= 800) {
+          rightHtml += `<div class="right">문제 ${question.id}. ${question.content}</div>`;
+        } else {
+          leftHtml += questionHtml;
         }
-        </div>
-      </div>
-    </body>
+        totalHeight += questionHeight;
+
+        // 좌측과 우측의 HTML을 합칩니다.
+        if (rightHtml === "") {
+          pageHtml += `<div class="left" style="width: 400px;">${leftHtml}</div>`;
+        } else {
+          pageHtml += `<div class="left">${leftHtml}</div><div class="right">${rightHtml}</div>`;
+        }
+        pageHtml += "</div></div>";
+        // 현재 페이지의 HTML을 배열에 추가합니다.
+        pages.push(pageHtml);
+        questionsBefore1800 = []; // 이전 페이지의 문제들을 비움
+        currentPage++;
+      });
+    }
+
+    totalHeight = 0;
+    if (exceededQuestions) {
+      exceededQuestions.forEach((question) => {
+        if (totalHeight + questionHeight < 1800) {
+          questionsBefore1800.push(question);
+          totalHeight += questionHeight; // 높이 추가
+        } else {
+          exceededQuestions = []; // 이전 페이지의 문제들을 비움
+          exceededQuestions.push(question); // 초과한 문제 추가
+        }
+      });
+    } else {
+      return;
+    }
+    totalHeight = 0;
+  });
+
+  const htmlContent = ejs.render(
+    `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- CSS 스타일 적용 -->
+      <style>
+        ${cssStyles}
+      </style>
+    </head>
+    <body>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      ${pages.join("")}
+      </body>
     </html>
   `,
     data
@@ -167,3 +186,24 @@ async function generatePDF(data) {
 }
 
 module.exports = generatePDF;
+
+// 우측으로 넘어가는 경우
+// if (
+//   (rightHtml !== "" && totalHeight + questionHeight > 1600) ||
+//   currentPage === 1
+// ) {
+//   pageHtml += `</div></div>`; // 현재 페이지 마감
+//   pages.push(pageHtml); // 현재 페이지를 배열에 추가합니다.
+//   // 새 페이지를 시작합니다.
+//   currentPage++;
+//   pageHtml =
+//     '<div class="page"><div class="viewer" style="height: 1100px;">'; // 새 페이지 생성
+//   leftHtml = ""; // 좌측 HTML 초기화
+//   rightHtml = ""; // 우측 HTML 초기화
+//   totalHeight = 0; // 높이 초기화
+//   if (totalHeight + questionHeight > 800) {
+//     rightHtml += `<div class="right">문제 ${question.id}. ${question.content}</div>`;
+//   } else {
+//     leftHtml += questionHtml;
+//   }
+// }

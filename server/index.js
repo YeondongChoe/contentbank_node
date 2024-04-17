@@ -57,15 +57,15 @@ app.post("/get-pdf", async (req, res) => {
   const uploadDir = "/usr/share/nginx/html/CB";
 
   // 디렉토리가 존재하지 않으면 생성
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
+  // if (!fs.existsSync(uploadDir)) {
+  //   fs.mkdirSync(uploadDir, { recursive: true });
+  // }
 
   // PDF 생성 모듈 호출
   const pdfBuffer = await generatePDF(data);
 
   // 파일 저장 경로
-  const filePath = `${uploadDir}/worksheettest.pdf`;
+  const filePath = `${uploadDir}/worksheetest.pdf`;
 
   // 파일 저장
   fs.writeFile(filePath, pdfBuffer, (err) => {
@@ -81,8 +81,8 @@ app.post("/get-pdf", async (req, res) => {
   });
 
   // PDF를 클라이언트로 전송
-  // res.contentType("application/pdf");
-  // res.send(pdfBuffer);
+  //res.contentType("application/pdf");
+  //res.send(pdfBuffer);
 });
 
 app.listen(port, () => {
