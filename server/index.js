@@ -8,50 +8,40 @@ const generatePDF = require("./src/utils/pdfGenerator.js");
 const app = express();
 
 // 모든 요청에 대해 CORS 미들웨어 적용
-// app.use(
-//   cors({
-//     origin: true, // 실제 요청이 온 origin을 허용
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-//     credentials: true, // 자격 증명 허용
-//   })
-// );
-app.use(cors());
-
-const corsOptions = {
-  origin: "*",
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: true, // 실제 요청이 온 origin을 허용
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+    credentials: true, // 자격 증명 허용
+  })
+);
 
 // Preflight 요청에 대한 응답 처리
 app.options("*", (req, res) => {
   res.sendStatus(200);
 });
 
+// HTTP 서버는 5050 포트에서 리스닝하도록 설정
 const httpServer = http.createServer(app);
+
+// HTTPS 서버는 5051 포트에서 리스닝하도록 설정
 const httpsServer = https.createServer({}, app);
 
+// HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 httpsServer.on("request", (req, res) => {
-  const proxy = http.request({
-    host: "localhost",
-    port: 5051,
-    path: req.url,
-    method: req.method,
-    headers: req.headers,
-  });
+  res.writeHead(301, { Location: `http://${req.headers.host}${req.url}` });
+  res.end();
+});
 
-  proxy.on("response", (proxyRes) => {
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res, { end: true });
-  });
-  req.pipe(proxy, { end: true });
+// HTTPS 서버는 5051 포트에서 리스닝하도록 설정
+httpsServer.listen(5051, () => {
+  console.log(`HTTPS Server is running on port 5051`);
 });
-httpServer.listen(5051, () => {
-  console.log(`Server is running on port 5051`);
-});
-httpsServer.listen(5050, () => {
-  console.log(`Server is running on port 5050`);
+
+// HTTP 서버는 5050 포트에서 리스닝하도록 설정
+httpServer.listen(5050, () => {
+  console.log(`HTTP Server is running on port 5050`);
 });
 
 app.use(bodyParser.json());
