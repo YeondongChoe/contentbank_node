@@ -15,11 +15,19 @@ const httpsServer = https.createServer({}, app);
 
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 httpsServer.on("request", (req, res) => {
-  const Location = `http://localhost:5051`;
-  console.log(Location);
-  // HTTP 301 Moved Permanently 상태 코드와 함께 리다이렉션을 수행
-  res.writeHead(301, { Location });
-  res.end();
+  const proxy = http.request({
+    host: "localhost",
+    port: 5051,
+    path: req.url,
+    method: req.method,
+    headers: req.headers,
+  });
+
+  proxy.on("response", (proxyRes) => {
+    res.writeHead(proxyRes.statusCode, proxyRes.headers);
+    proxyRes.pipe(res, { end: true });
+  });
+  req.pipe(proxy, { end: true });
 });
 
 // 모든 요청에 대해 CORS 미들웨어 적용
