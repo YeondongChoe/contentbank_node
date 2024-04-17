@@ -28,14 +28,12 @@ const httpServer = http.createServer(app);
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
 const httpsServer = https.createServer({}, app);
 
-let Location = "";
-
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 httpsServer.on("request", (req, res) => {
+  const Location = `http://${req.headers.host}${req.url}`;
   console.log(Location);
-  console.log("s");
-  res.writeHead(301, { Location: `http://${req.headers.host}${req.url}` });
-  console.log(Location);
+  // HTTP 301 Moved Permanently 상태 코드와 함께 리다이렉션을 수행
+  res.writeHead(301, { Location });
   res.end();
 });
 
