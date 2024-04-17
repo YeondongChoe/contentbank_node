@@ -14,8 +14,8 @@ const httpServer = http.createServer(app);
 const httpsServer = https.createServer({}, app);
 
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
-httpServer.on("request", (req, res) => {
-  const Location = `http://${req.headers.host}${req.url}`;
+httpsServer.on("request", (req, res) => {
+  const Location = `http://localhost:5051`;
   console.log(Location);
   // HTTP 301 Moved Permanently 상태 코드와 함께 리다이렉션을 수행
   res.writeHead(301, { Location });
