@@ -22,14 +22,6 @@ httpsServer.on("request", (req, res) => {
   res.end();
 });
 
-httpServer.on("request", (req, res) => {
-  const Location = `http://${req.headers.host}${req.url}`;
-  console.log(Location);
-  // HTTP 301 Moved Permanently 상태 코드와 함께 리다이렉션을 수행
-  res.writeHead(301, { Location });
-  res.end();
-});
-
 // 모든 요청에 대해 CORS 미들웨어 적용
 app.use(
   cors({
