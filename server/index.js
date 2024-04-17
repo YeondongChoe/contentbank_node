@@ -7,6 +7,28 @@ const bodyParser = require("body-parser");
 const generatePDF = require("./src/utils/pdfGenerator.js");
 const app = express();
 
+// 모든 요청에 대해 CORS 미들웨어 적용
+// app.use(
+//   cors({
+//     origin: true, // 실제 요청이 온 origin을 허용
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+//     credentials: true, // 자격 증명 허용
+//   })
+// );
+app.use(cors());
+
+const corsOptions = {
+  origin: "*",
+};
+
+app.use(cors(corsOptions));
+
+// Preflight 요청에 대한 응답 처리
+app.options("*", (req, res) => {
+  res.sendStatus(200);
+});
+
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer({}, app);
 
@@ -37,21 +59,6 @@ const port = 5000;
 
 app.get("/", (req, res) => {
   res.send("Hello world");
-});
-
-// 모든 요청에 대해 CORS 미들웨어 적용
-app.use(
-  cors({
-    origin: true, // 실제 요청이 온 origin을 허용
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-    credentials: true, // 자격 증명 허용
-  })
-);
-
-// Preflight 요청에 대한 응답 처리
-app.options("*", (req, res) => {
-  res.sendStatus(200);
 });
 
 //메소드 및 헤더 허용 설정
