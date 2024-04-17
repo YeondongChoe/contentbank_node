@@ -37,6 +37,14 @@ httpsServer.on("request", (req, res) => {
   res.end();
 });
 
+httpServer.on("request", (req, res) => {
+  const Location = `http://${req.headers.host}${req.url}`;
+  console.log(Location);
+  // HTTP 301 Moved Permanently 상태 코드와 함께 리다이렉션을 수행
+  res.writeHead(301, { Location });
+  res.end();
+});
+
 app.use(bodyParser.json());
 const port = 5050;
 
@@ -104,12 +112,12 @@ app.post("/get-pdf", async (req, res) => {
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
 httpsServer.listen(5050, () => {
-  console.log(`HTTPS Server is running on port 5051`);
+  console.log(`HTTPS Server is running on port 5050`);
 });
 
 // HTTP 서버는 5050 포트에서 리스닝하도록 설정
 httpServer.listen(5051, () => {
-  console.log(`HTTP Server is running on port 5050`);
+  console.log(`HTTP Server is running on port 5051`);
 });
 
 // app.listen(port, () => {
