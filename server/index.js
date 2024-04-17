@@ -88,13 +88,13 @@ app.post("/get-pdf", async (req, res) => {
 });
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-httpsServer.listen(port, () => {
-  console.log(`HTTPS Server is running on port ${port}`);
+httpsServer.listen(5050, () => {
+  console.log(`HTTPS Server is running on port 5050`);
 });
 
 // HTTP 서버는 5050 포트에서 리스닝하도록 설정
-httpServer.listen(port1, () => {
-  console.log(`HTTP Server is running on port ${port1}`);
+httpServer.listen(5051, () => {
+  console.log(`HTTP Server is running on port 5051`);
 });
 
 // app.listen(port, () => {
