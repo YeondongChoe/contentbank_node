@@ -5,6 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const generatePDF = require("./src/utils/pdfGenerator.js");
+const app = express();
 
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer({}, app);
@@ -27,7 +28,6 @@ httpsServer.on("request", (req, res) => {
 httpServer.listen(5051, () => {});
 httpsServer.listen(5050, () => {});
 
-const app = express();
 app.use(bodyParser.json());
 const port = 5000;
 
