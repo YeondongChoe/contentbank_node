@@ -57,9 +57,9 @@ app.post("/get-pdf", async (req, res) => {
   const uploadDir = "/usr/share/nginx/html/CB";
 
   // 디렉토리가 존재하지 않으면 생성
-  // if (!fs.existsSync(uploadDir)) {
-  //   fs.mkdirSync(uploadDir, { recursive: true });
-  // }
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
 
   // PDF 생성 모듈 호출
   const pdfBuffer = await generatePDF(data);
