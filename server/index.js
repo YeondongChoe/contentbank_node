@@ -1,8 +1,31 @@
 const fs = require("fs");
+const http = require("http");
+const https = require("https");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const generatePDF = require("./src/utils/pdfGenerator.js");
+
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer({}, app);
+
+httpsServer.on("request", (req, res) => {
+  const proxy = http.request({
+    host: "localhost",
+    port: 5051,
+    path: req.url,
+    method: req.method,
+    headers: req.headers,
+  });
+
+  proxy.on("response", (proxyRes) => {
+    res.writeHead(proxyRes.statusCode, proxyRes.headers);
+    proxyRes.pipe(res, { end: true });
+  });
+  req.pipe(proxy, { end: true });
+});
+httpServer.listen(5051, () => {});
+httpsServer.listen(5050, () => {});
 
 const app = express();
 app.use(bodyParser.json());
@@ -85,9 +108,9 @@ app.post("/get-pdf", async (req, res) => {
   //res.send(pdfBuffer);
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 
 // app.use(
 //   cors({
