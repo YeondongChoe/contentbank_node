@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 const httpsServer = https.createServer({}, app);
 
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
-httpsServer.on("request", (req, res) => {
+httpServer.on("request", (req, res) => {
   const Location = `http://${req.headers.host}${req.url}`;
   console.log(Location);
   // HTTP 301 Moved Permanently 상태 코드와 함께 리다이렉션을 수행
@@ -88,13 +88,13 @@ app.post("/get-pdf", async (req, res) => {
 });
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-httpsServer.listen(port, () => {
-  console.log(`HTTPS Server is running on port ${port}`);
+httpsServer.listen(5050, () => {
+  console.log(`HTTPS Server is running on port 5050`);
 });
 
 // HTTP 서버는 5050 포트에서 리스닝하도록 설정
-httpServer.listen(port1, () => {
-  console.log(`HTTP Server is running on port ${port1}`);
+httpServer.listen(5051, () => {
+  console.log(`HTTP Server is running on port 5051`);
 });
 
 // app.listen(port, () => {
