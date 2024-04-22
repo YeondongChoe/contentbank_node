@@ -8,18 +8,18 @@ const generatePDF = require("./src/utils/pdfGenerator.js");
 const app = express();
 
 // HTTP 서버는 5050 포트에서 리스닝하도록 설정
-const httpServer = http.createServer(app);
+// const httpServer = http.createServer(app);
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-const httpsServer = https.createServer({}, app);
+// const httpsServer = https.createServer({}, app);
 
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
-httpsServer.on("request", (req, res) => {
-  // HTTPS 서버에 HTTP 요청이 들어오면 HTTP로 리다이렉션
-  const redirectUrl = `http://${req.headers.host}${req.url}`;
-  res.writeHead(301, { Location: redirectUrl });
-  res.end();
-});
+// httpsServer.on("request", (req, res) => {
+//   // HTTPS 서버에 HTTP 요청이 들어오면 HTTP로 리다이렉션
+//   const redirectUrl = `http://${req.headers.host}${req.url}`;
+//   res.writeHead(301, { Location: redirectUrl });
+//   res.end();
+// });
 
 // 모든 요청에 대해 CORS 미들웨어 적용
 app.use(
@@ -85,15 +85,15 @@ app.post("/get-pdf", async (req, res) => {
 });
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-httpsServer.listen(port, () => {
-  console.log(`HTTPS Server is running on port ${port}`);
-});
+// httpsServer.listen(port, () => {
+//   console.log(`HTTPS Server is running on port ${port}`);
+// });
 
 // HTTP 서버는 5050 포트에서 리스닝하도록 설정
-httpServer.listen(port1, () => {
-  console.log(`HTTP Server is running on port ${port1}`);
-});
-
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
+// httpServer.listen(port1, () => {
+//   console.log(`HTTP Server is running on port ${port1}`);
 // });
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
