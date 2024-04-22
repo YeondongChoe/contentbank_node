@@ -15,19 +15,10 @@ const httpsServer = https.createServer({}, app);
 
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 httpsServer.on("request", (req, res) => {
-  const proxy = http.request({
-    host: "http://210.124.177.36",
-    port: 5051,
-    path: req.url,
-    method: req.method,
-    headers: req.headers,
-  });
-
-  proxy.on("response", (proxyRes) => {
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res, { end: true });
-  });
-  req.pipe(proxy, { end: true });
+  // HTTPS 서버에 HTTP 요청이 들어오면 HTTP로 리다이렉션
+  const redirectUrl = `http://${req.headers.host}${req.url}`;
+  res.writeHead(301, { Location: redirectUrl });
+  res.end();
 });
 
 // 모든 요청에 대해 CORS 미들웨어 적용
@@ -82,8 +73,6 @@ app.post("/get-pdf", async (req, res) => {
     if (err) {
       console.error("파일 저장 중 오류 발생:", err);
       res.status(500).send("파일 저장 중 오류가 발생했습니다.");
-      console.log(__dirname);
-      // /app
     } else {
       console.log("파일이 성공적으로 저장되었습니다:", filePath);
       res.send("파일이 성공적으로 저장되었습니다.");
