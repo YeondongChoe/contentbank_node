@@ -32,9 +32,9 @@ app.use(
 );
 
 // Preflight 요청에 대한 응답 처리
-app.options("*", (req, res) => {
-  res.sendStatus(200);
-});
+// app.options("*", (req, res) => {
+//   res.sendStatus(200);
+// });
 
 app.use(bodyParser.json());
 const port = 5050;
@@ -85,13 +85,13 @@ app.post("/get-pdf", async (req, res) => {
 });
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-httpsServer.listen(5050, () => {
-  console.log(`HTTPS Server is running on port 5050`);
+httpsServer.listen(port, () => {
+  console.log(`HTTPS Server is running on port ${port}`);
 });
 
 // HTTP 서버는 5050 포트에서 리스닝하도록 설정
-httpServer.listen(5051, () => {
-  console.log(`HTTP Server is running on port 5051`);
+httpServer.listen(port1, () => {
+  console.log(`HTTP Server is running on port ${port1}`);
 });
 
 // app.listen(port, () => {
