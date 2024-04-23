@@ -1,17 +1,24 @@
 const fs = require("fs");
-const http = require("http");
 const https = require("https");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const generatePDF = require("./src/utils/pdfGenerator.js");
+const path = require("path");
 const app = express();
 
-// HTTP 서버는 5050 포트에서 리스닝하도록 설정
-// const httpServer = http.createServer(app);
+const port = 5050;
 
-// HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-// const httpsServer = https.createServer({}, app);
+// 인증서 파일의 경로 설정
+const privateKeyPath = path.resolve(__dirname, "../server/cert/key.pem");
+const certificatePath = path.resolve(__dirname, "../server/cert/cert.pem");
+// SSL 인증서 읽어오기
+const privateKey = fs.readFileSync(privateKeyPath, "utf8");
+const certificate = fs.readFileSync(certificatePath, "utf8");
+// SSL 인증서 설정
+const credentials = { key: privateKey, cert: certificate };
+
+const httpsServer = https.createServer(credentials, app);
 
 // HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
 // httpsServer.on("request", (req, res) => {
@@ -31,14 +38,7 @@ app.use(
   })
 );
 
-// Preflight 요청에 대한 응답 처리
-// app.options("*", (req, res) => {
-//   res.sendStatus(200);
-// });
-
 app.use(bodyParser.json());
-const port = 5050;
-const port1 = 5051;
 
 app.get("/", (req, res) => {
   res.send("Hello world");
@@ -85,15 +85,10 @@ app.post("/get-pdf", async (req, res) => {
 });
 
 // HTTPS 서버는 5051 포트에서 리스닝하도록 설정
-// httpsServer.listen(port, () => {
-//   console.log(`HTTPS Server is running on port ${port}`);
-// });
-
-// HTTP 서버는 5050 포트에서 리스닝하도록 설정
-// httpServer.listen(port1, () => {
-//   console.log(`HTTP Server is running on port ${port1}`);
-// });
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+httpsServer.listen(port, () => {
+  console.log(`HTTPS Server is running on port ${port}`);
 });
+
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
