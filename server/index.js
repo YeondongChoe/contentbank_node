@@ -7,8 +7,10 @@ const bodyParser = require("body-parser");
 const generatePDF = require("./src/utils/pdfGenerator.js");
 const path = require("path");
 const app = express();
+const httpApp = express();
 
 const port = 5050;
+const port1 = 5051;
 
 // 인증서 파일의 경로 설정
 const privateKeyPath = path.resolve(__dirname, "../server/cert/key.pem");
@@ -21,13 +23,17 @@ const credentials = { key: privateKey, cert: certificate };
 
 const httpsServer = https.createServer(credentials, app);
 
-// HTTPS 서버에서 HTTP로 리다이렉션하는 미들웨어 함수
-// httpsServer.on("request", (req, res) => {
-//   // HTTPS 서버에 HTTP 요청이 들어오면 HTTP로 리다이렉션
-//   const redirectUrl = `http://${req.headers.host}${req.url}`;
-//   res.writeHead(301, { Location: redirectUrl });
-//   res.end();
-// });
+// HTTPS 서버로 리다이렉트하는 미들웨어
+httpApp.use((req, res, next) => {
+  // HTTPS 요청인지 확인
+  if (req.secure) {
+    // HTTPS 요청인 경우 다음 미들웨어로 이동
+    next();
+  } else {
+    // HTTP 요청인 경우 HTTPS로 리다이렉트
+    res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+});
 
 // 모든 요청에 대해 CORS 미들웨어 적용
 app.use(
@@ -85,9 +91,15 @@ app.post("/get-pdf", async (req, res) => {
   //res.send(pdfBuffer);
 });
 
-// HTTPS 서버는 5051 포트에서 리스닝하도록 설정
+// HTTPS 서버는 5050 포트에서 리스닝하도록 설정
 httpsServer.listen(port, () => {
   console.log(`HTTPS Server is running on port ${port}`);
+});
+
+// HTTP 서버는 5051 포트에서리스닝하도록 설정
+const httpServer = http.createServer(httpApp);
+httpServer.listen(port1, () => {
+  console.log(`HTTP Server is running on port 5051`);
 });
 
 // app.listen(port, () => {
