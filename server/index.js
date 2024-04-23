@@ -13,8 +13,9 @@ const port = 5050;
 const port1 = 5051;
 
 // 인증서 파일의 경로 설정
-const privateKeyPath = path.resolve(__dirname, "../server/cert/key.pem");
-const certificatePath = path.resolve(__dirname, "../server/cert/cert.pem");
+const privateKeyPath = path.resolve(__dirname, "../cert/key.pem");
+const certificatePath = path.resolve(__dirname, "../cert/cert.pem");
+
 // SSL 인증서 읽어오기
 const privateKey = fs.readFileSync(privateKeyPath, "utf8");
 const certificate = fs.readFileSync(certificatePath, "utf8");
