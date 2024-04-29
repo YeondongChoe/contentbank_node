@@ -90,15 +90,17 @@ app.get("/", (req, res) => {
 app.set("view engine", "ejs");
 
 app.post("/get-pdf", async (req, res) => {
-  const { title, content, column } = req.body;
+  const { title, content, column, uploadDir, fileName } = req.body;
   // 데이터 및 CSS 스타일
   const data = {
     title: title,
     content: content,
     column: column,
+    uploadDir: uploadDir,
+    fileName: fileName,
   };
   // 파일 저장할 디렉토리 경로
-  const uploadDir = "/usr/share/nginx/html/CB";
+  //const uploadDir = "/usr/share/nginx/html/CB";
 
   // 디렉토리가 존재하지 않으면 생성
   if (!fs.existsSync(uploadDir)) {
@@ -109,7 +111,7 @@ app.post("/get-pdf", async (req, res) => {
   const pdfBuffer = await generatePDF(data);
 
   // 파일 저장 경로
-  const filePath = `${uploadDir}/worksheettest.pdf`;
+  const filePath = `${uploadDir}/${fileName}`;
 
   // 파일 저장
   fs.writeFile(filePath, pdfBuffer, (err) => {
