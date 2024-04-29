@@ -58,7 +58,7 @@ const client = new Eureka({
   eureka: {
     host: "server-eureka", // Eureka 서버 호스트
     port: 8761, // Eureka 서버 포트
-    servicePath: "/eureka/apps/",
+    servicePath: "/eureka",
   },
 });
 
