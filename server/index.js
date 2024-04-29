@@ -1,38 +1,73 @@
 const fs = require("fs");
-const https = require("https");
-const http = require("http");
+// const https = require("https");
+// const http = require("http");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const generatePDF = require("./src/utils/pdfGenerator.js");
-const path = require("path");
-const app = express();
-const httpApp = express();
+const Eureka = require("eureka-js-client").Eureka; // Eureka 클라이언트 추가
 
+const app = express();
 const port = 5050;
-const port1 = 5051;
+
+// const path = require("path");
+// const options = require("./src/config/pem_config").options;
+// const httpApp = express();
+// const port1 = 5051;
 
 // 인증서 파일의 경로 설정
-const privateKeyPath = path.resolve(__dirname, "../cert/key.pem");
-const certificatePath = path.resolve(__dirname, "../cert/cert.pem");
+// const privateKeyPath = path.resolve(__dirname, "cert/key.pem");
+// const certificatePath = path.resolve(__dirname, "cert/csr.pem");
 
 // SSL 인증서 읽어오기
-const privateKey = fs.readFileSync(privateKeyPath, "utf8");
-const certificate = fs.readFileSync(certificatePath, "utf8");
+// const privateKey = fs.readFileSync(privateKeyPath, "utf8");
+// const certificate = fs.readFileSync(certificatePath, "utf8");
 // SSL 인증서 설정
-const credentials = { key: privateKey, cert: certificate };
+// const credentials = { key: privateKey, csr: certificate };
 
-const httpsServer = https.createServer(credentials, app);
+// const httpsServer = https.createServer(options, app);
 
 // HTTPS 서버로 리다이렉트하는 미들웨어
-httpApp.use((req, res, next) => {
-  // HTTPS 요청인지 확인
-  if (req.secure) {
-    // HTTPS 요청인 경우 다음 미들웨어로 이동
-    next();
+// httpApp.use((req, res, next) => {
+//   // HTTPS 요청인지 확인
+//   if (req.secure) {
+//     // HTTPS 요청인 경우 다음 미들웨어로 이동
+//     next();
+//   } else {
+//     // HTTP 요청인 경우 HTTPS로 리다이렉트
+//     res.redirect(`https://${req.headers.host}${req.url}`);
+//   }
+// });
+
+// Eureka 클라이언트 설정
+const client = new Eureka({
+  instance: {
+    app: "node-service", // 서비스 이름
+    hostName: "api-node-service", // 서비스 호스트명
+    ipAddr: "127.0.0.1", // 서비스 IP 주소
+    port: {
+      $: port,
+      "@enabled": "true",
+    },
+    vipAddress: "api-node-service",
+    dataCenterInfo: {
+      "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+      name: "MyOwn",
+    },
+  },
+  eureka: {
+    host: "server-eureka", // Eureka 서버 호스트
+    port: 8761, // Eureka 서버 포트
+    servicePath: "/eureka/apps/",
+  },
+});
+
+// Eureka 클라이언트 시작
+client.start((error) => {
+  if (error) {
+    console.log(error);
   } else {
-    // HTTP 요청인 경우 HTTPS로 리다이렉트
-    res.redirect(`https://${req.headers.host}${req.url}`);
+    console.log("Eureka client started");
   }
 });
 
@@ -93,16 +128,16 @@ app.post("/get-pdf", async (req, res) => {
 });
 
 // HTTPS 서버는 5050 포트에서 리스닝하도록 설정
-httpsServer.listen(port, () => {
-  console.log(`HTTPS Server is running on port ${port}`);
-});
+// httpsServer.listen(port, () => {
+//   console.log(`HTTPS Server is running on port ${port}`);
+// });
 
 // HTTP 서버는 5051 포트에서리스닝하도록 설정
-const httpServer = http.createServer(httpApp);
-httpServer.listen(port1, () => {
-  console.log(`HTTP Server is running on port 5051`);
-});
-
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
+// const httpServer = http.createServer(httpApp);
+// httpServer.listen(port1, () => {
+//   console.log(`HTTP Server is running on port 5051`);
 // });
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
