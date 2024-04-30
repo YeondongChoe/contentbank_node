@@ -43,13 +43,13 @@ const port = 5050;
 const client = new Eureka({
   instance: {
     app: "file-service", // 서비스 이름
-    hostName: "api-node-service", // 서비스 호스트명
+    hostName: "file-service", // 서비스 호스트명
     ipAddr: "127.0.0.1", // 서비스 IP 주소
     port: {
       $: port,
       "@enabled": "true",
     },
-    vipAddress: "api-node-service",
+    vipAddress: "file-service",
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       name: "MyOwn",
