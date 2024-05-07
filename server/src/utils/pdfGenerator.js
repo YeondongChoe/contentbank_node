@@ -15,6 +15,26 @@ async function generatePDF(data) {
     { id: 8, content: data.content },
     { id: 9, content: data.content },
     { id: 10, content: data.content },
+    { id: 11, content: data.content },
+    { id: 12, content: data.content },
+    { id: 13, content: data.content },
+    { id: 14, content: data.content },
+    { id: 15, content: data.content },
+    { id: 16, content: data.content },
+    { id: 17, content: data.content },
+    { id: 18, content: data.content },
+    { id: 19, content: data.content },
+    { id: 20, content: data.content },
+    { id: 21, content: data.content },
+    { id: 22, content: data.content },
+    { id: 23, content: data.content },
+    { id: 24, content: data.content },
+    { id: 25, content: data.content },
+    { id: 26, content: data.content },
+    { id: 27, content: data.content },
+    { id: 28, content: data.content },
+    { id: 29, content: data.content },
+    { id: 30, content: data.content },
   ];
 
   const cssStyles = `
@@ -89,12 +109,19 @@ async function generatePDF(data) {
 
       totalHeight += questionHeight;
 
+      // 좌측과 우측 배열을 콘솔에 출력
+      console.log("Left Position Array:", leftPositionArray);
+      console.log("Right Position Array:", rightPositionArray);
+
       // 우측 HTML 구성
       if (rightPositionArray.length > 0) {
         rightHtml += rightPositionArray
           .map((q) => `<div class="right">문제 ${q.id}. ${q.content}</div>`)
           .join("");
         rightPositionArray = []; // 우측 배열 초기화
+
+        // 우측 HTML을 만든 후에 콘솔에 출력
+        console.log("Right HTML:", rightHtml);
       }
 
       // 좌측 HTML 구성
