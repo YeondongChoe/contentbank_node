@@ -99,36 +99,42 @@ async function generatePDF(data) {
     let remainArray = [];
 
     questions.forEach((question) => {
-      // 좌측에 표시
-      leftPositionArray.push(question);
-
-      // 높이가 900을 초과한 경우 우측에 표시
-      if (totalHeight + questionHeight >= 900) {
+      // 높이가 900을 초과하지 않은 경우 좌측배열 추가
+      if (totalHeight + questionHeight < 900) {
+        // 좌측 배열에 추가
+        leftPositionArray.push(question);
+        totalHeight += questionHeight;
+      } else {
+        //초과한 문제 우측 배열에 추가
         rightPositionArray.push(question);
       }
-
-      totalHeight += questionHeight;
 
       // 좌측과 우측 배열을 콘솔에 출력
       console.log("totalHeight:", totalHeight);
       console.log("Left Position Array:", leftPositionArray);
       console.log("Right Position Array:", rightPositionArray);
 
-      // 우측 HTML 구성
-      if (rightPositionArray.length > 0) {
-        rightHtml += rightPositionArray
-          .map((q) => `<div class="right">문제 ${q.id}. ${q.content}</div>`)
-          .join("");
-        rightPositionArray = []; // 우측 배열 초기화
-
-        // 우측 HTML을 만든 후에 콘솔에 출력
-        console.log("Right HTML:", rightHtml);
-      }
-
       // 좌측 HTML 구성
       leftHtml = leftPositionArray
         .map((q) => `<div class="left">문제 ${q.id}. ${q.content}</div>`)
         .join("");
+
+      totalHeight = 0; // 높이 초기화
+      // 우측 HTML 구성
+      if (rightPositionArray.length > 0) {
+        rightPositionArray.forEach((question) => {
+          // 높이가 900을 초과하지 않는 경우 우측에 표시
+          if (totalHeight + questionHeight < 900) {
+            rightHtml += `<div class="right">문제 ${question.id}. ${question.content}</div>`;
+            totalHeight += questionHeight;
+          } else {
+            //초과한 문제 나머지 배열에 추가
+            remainArray.push(question);
+          }
+        });
+        // 우측 HTML을 만든 후에 콘솔에 출력
+        console.log("Right HTML:", rightHtml);
+      }
 
       // 페이지 HTML 구성
       let pageHtml = "";
@@ -168,6 +174,8 @@ async function generatePDF(data) {
 
       // 페이지 초기화
       leftPositionArray = [];
+      rightPositionArray = []; // 우측 배열 초기화
+      leftHtml = "";
       rightHtml = "";
       totalHeight = 0;
       currentPage++;
