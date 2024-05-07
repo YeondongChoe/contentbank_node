@@ -65,112 +65,115 @@ async function generatePDF(data) {
       padding: 20px;
     }
   `;
+
   let currentPage = 1; // 현재 페이지
-  let pageHtml = ""; // 페이지 HTML 초기화
   let pages = []; // 각 페이지의 HTML을 저장할 배열
 
-  if (currentPage === 1) {
-    pageHtml += `
-      <div class="page">
-        <div class="header">
-          <div class="headerLeft">
-            <div class="leftTop">
-              <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
-              <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
+  const generatePages = (questions) => {
+    let leftHtml = ""; // 좌측에 표시할 HTML 문자열
+    let rightHtml = ""; // 우측에 표시할 HTML 문자열
+    let totalHeight = 0;
+    let questionHeight = 200;
+    let leftPositionArray = [];
+    let rightPositionArray = [];
+    let remainArray = [];
+
+    questions.forEach((question) => {
+      // 좌측에 표시
+      leftPositionArray.push(question);
+
+      // 높이가 900을 초과한 경우 우측에 표시
+      if (totalHeight + questionHeight >= 900) {
+        rightPositionArray.push(question);
+      }
+
+      totalHeight += questionHeight;
+
+      // 우측 HTML 구성
+      if (rightPositionArray.length > 0) {
+        rightHtml += rightPositionArray
+          .map((q) => `<div class="right">문제 ${q.id}. ${q.content}</div>`)
+          .join("");
+        rightPositionArray = []; // 우측 배열 초기화
+      }
+
+      // 좌측 HTML 구성
+      leftHtml = leftPositionArray
+        .map((q) => `<div class="left">문제 ${q.id}. ${q.content}</div>`)
+        .join("");
+
+      // 페이지 HTML 구성
+      let pageHtml = "";
+      if (currentPage === 1) {
+        pageHtml += `
+        <div class="page">
+          <div class="header">
+            <div class="headerLeft">
+              <div class="leftTop">
+                <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
+                <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
+              </div>
+              <div class="leftBottom">
+                <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+              </div>
             </div>
-            <div class="leftBottom">
-              <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+            <div class="headerRight">
+              <div>이미지</div>
+              <div class="inputWrapper">
+                <div style="font-size: 14px;">2024.02.27 이름</div>
+                <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
+              </div>
             </div>
           </div>
-          <div class="headerRight">
-            <div>이미지 아이콘</div>
-            <div class="inputWrapper">
-              <div style="font-size: 14px;">2024.02.27 이름</div>
-              <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
-            </div>
-          </div>
-        </div>`;
-  }
+      `;
+      }
 
-  pageHtml += '<div class="viewer" style="height: 950px;">';
-  let totalHeight = 0;
-  let questionHeight = 200;
-  let questionsBefore1800 = []; // 1800 이전의 문제를 담을 배열
-  let exceededQuestions = []; // 1800을 초과한 문제를 담을 배열
+      pageHtml += `
+        <div class="viewer">
+          <div class="left">${leftHtml}</div>
+          <div class="right">${rightHtml}</div>
+        </div>
+      </div>
+    `;
 
-  let leftHtml = ""; // 좌측에 표시할 HTML 문자열
-  let rightHtml = ""; // 우측에 표시할 HTML 문자열
+      pages.push(pageHtml);
 
-  questions.forEach((question) => {
-    if (totalHeight + questionHeight < 1800) {
-      questionsBefore1800.push(question);
-      console.log(questionsBefore1800);
-      totalHeight += questionHeight; // 높이 추가
-    } else {
-      exceededQuestions.push(question); // 초과한 문제 추가
+      // 페이지 초기화
+      leftPositionArray = [];
+      rightHtml = "";
+      totalHeight = 0;
+      currentPage++;
+    });
+
+    // RemainArray에 남은 문제가 있는지 확인하여 처리
+    if (remainArray.length > 0) {
+      generatePages(remainArray); // 재귀 호출로 추가 페이지 생성
     }
+  };
 
-    totalHeight = 0;
-    if (questionsBefore1800) {
-      questionsBefore1800.forEach((question, index) => {
-        const questionHtml = `<div class="left">문제 ${question.id}. ${question.content}</div>`;
-        if (totalHeight + questionHeight >= 800) {
-          rightHtml += `<div class="right">문제 ${question.id}. ${question.content}</div>`;
-        } else {
-          leftHtml += questionHtml;
-        }
-        totalHeight += questionHeight;
+  // 함수 호출
+  generatePages(questions);
 
-        // 좌측과 우측의 HTML을 합칩니다.
-        if (rightHtml === "") {
-          pageHtml += `<div class="left" style="width: 400px;">${leftHtml}</div>`;
-        } else {
-          pageHtml += `<div class="left">${leftHtml}</div><div class="right">${rightHtml}</div>`;
-        }
-        pageHtml += "</div></div>";
-        // 현재 페이지의 HTML을 배열에 추가합니다.
-        pages.push(pageHtml);
-        questionsBefore1800 = []; // 이전 페이지의 문제들을 비움
-        currentPage++;
-      });
-    }
-
-    totalHeight = 0;
-    if (exceededQuestions) {
-      exceededQuestions.forEach((question) => {
-        if (totalHeight + questionHeight < 1800) {
-          questionsBefore1800.push(question);
-          totalHeight += questionHeight; // 높이 추가
-        } else {
-          exceededQuestions = []; // 이전 페이지의 문제들을 비움
-          exceededQuestions.push(question); // 초과한 문제 추가
-        }
-      });
-    } else {
-      return;
-    }
-    totalHeight = 0;
-  });
-
+  // HTML 생성
   const htmlContent = ejs.render(
     `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- CSS 스타일 적용 -->
-      <style>
-        ${cssStyles}
-      </style>
-    </head>
-    <body>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-      ${pages.join("")}
-      </body>
-    </html>
-  `,
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS 스타일 적용 -->
+    <style>
+      ${cssStyles}
+    </style>
+  </head>
+  <body>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    ${pages.join("")}
+  </body>
+  </html>
+`,
     data
   );
 
@@ -207,3 +210,112 @@ module.exports = generatePDF;
 //     leftHtml += questionHtml;
 //   }
 // }
+
+// let currentPage = 1; // 현재 페이지
+//   let pageHtml = ""; // 페이지 HTML 초기화
+//   let pages = []; // 각 페이지의 HTML을 저장할 배열
+
+//   if (currentPage === 1) {
+//     pageHtml += `
+//       <div class="page">
+//         <div class="header">
+//           <div class="headerLeft">
+//             <div class="leftTop">
+//               <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
+//               <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
+//             </div>
+//             <div class="leftBottom">
+//               <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+//             </div>
+//           </div>
+//           <div class="headerRight">
+//             <div>이미지 아이콘</div>
+//             <div class="inputWrapper">
+//               <div style="font-size: 14px;">2024.02.27 이름</div>
+//               <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
+//             </div>
+//           </div>
+//         </div>`;
+//   }
+
+//   pageHtml += '<div class="viewer" style="height: 950px;">';
+//   let totalHeight = 0;
+//   let questionHeight = 200;
+//   let questionsBefore1800 = []; // 1800 이전의 문제를 담을 배열
+//   let exceededQuestions = []; // 1800을 초과한 문제를 담을 배열
+
+//   let leftHtml = ""; // 좌측에 표시할 HTML 문자열
+//   let rightHtml = ""; // 우측에 표시할 HTML 문자열
+
+//   questions.forEach((question) => {
+//     if (totalHeight + questionHeight < 1800) {
+//       questionsBefore1800.push(question);
+//       console.log(questionsBefore1800);
+//       totalHeight += questionHeight; // 높이 추가
+//     } else {
+//       exceededQuestions.push(question); // 초과한 문제 추가
+//     }
+
+//     totalHeight = 0;
+//     if (questionsBefore1800) {
+//       questionsBefore1800.forEach((question, index) => {
+//         const questionHtml = `<div class="left">문제 ${question.id}. ${question.content}</div>`;
+//         if (totalHeight + questionHeight >= 800) {
+//           rightHtml += `<div class="right">문제 ${question.id}. ${question.content}</div>`;
+//         } else {
+//           leftHtml += questionHtml;
+//         }
+//         totalHeight += questionHeight;
+
+//         // 좌측과 우측의 HTML을 합칩니다.
+//         if (rightHtml === "") {
+//           pageHtml += `<div class="left" style="width: 400px;">${leftHtml}</div>`;
+//         } else {
+//           pageHtml += `<div class="left">${leftHtml}</div><div class="right">${rightHtml}</div>`;
+//         }
+//         pageHtml += "</div></div>";
+//         // 현재 페이지의 HTML을 배열에 추가합니다.
+//         pages.push(pageHtml);
+//         questionsBefore1800 = []; // 이전 페이지의 문제들을 비움
+//         currentPage++;
+//       });
+//     }
+
+//     totalHeight = 0;
+//     if (exceededQuestions) {
+//       exceededQuestions.forEach((question) => {
+//         if (totalHeight + questionHeight < 1800) {
+//           questionsBefore1800.push(question);
+//           totalHeight += questionHeight; // 높이 추가
+//         } else {
+//           exceededQuestions = []; // 이전 페이지의 문제들을 비움
+//           exceededQuestions.push(question); // 초과한 문제 추가
+//         }
+//       });
+//     } else {
+//       return;
+//     }
+//     totalHeight = 0;
+//   });
+
+//   const htmlContent = ejs.render(
+//     `
+//     <!DOCTYPE html>
+//     <html lang="en">
+//     <head>
+//       <meta charset="UTF-8">
+//       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//       <!-- CSS 스타일 적용 -->
+//       <style>
+//         ${cssStyles}
+//       </style>
+//     </head>
+//     <body>
+//       <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+//       <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+//       ${pages.join("")}
+//       </body>
+//     </html>
+//   `,
+//     data
+//   );
