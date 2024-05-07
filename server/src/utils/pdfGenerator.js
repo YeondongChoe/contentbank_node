@@ -79,7 +79,7 @@ async function generatePDF(data) {
   // 페이지 HTML 구성
   if (currentPage === 1) {
     pageHtml += `
-    
+    <div class="pageWrapper">
       <div class="page">
         <div class="header">
           <div class="headerLeft">
@@ -106,7 +106,7 @@ async function generatePDF(data) {
   const generatePages = (questions) => {
     if (currentPage !== 1) {
       pageHtml +=
-        '<div class="page"><div class="viewer" style="height: 950px;">';
+        '<div class="pageWrapper"><div class="page"><div class="viewer" style="height: 950px;">';
     }
 
     let remainArray = [];
@@ -170,7 +170,7 @@ async function generatePDF(data) {
             // console.log("rightHtml:", rightHtml);
             totalHeight += questionHeight;
             console.log("totalHeight:", totalHeight);
-            pageHtml += "</div></div>";
+            pageHtml += "</div></div></div>";
           }
         });
       }
