@@ -90,15 +90,6 @@ async function generatePDF(data) {
         leftPositionArray.push(question);
         console.log("Left Position Array:", leftPositionArray);
 
-        // 좌측 HTML 구성
-        leftHtml = leftPositionArray
-          .map(
-            (question) =>
-              `<div class="left">문제 ${question.id}. ${question.content}</div>`
-          )
-          .join("");
-        console.log("leftHtml:", leftHtml);
-
         // 높이 추가
         totalHeight += questionHeight;
         console.log("totalHeight:", totalHeight);
@@ -108,16 +99,33 @@ async function generatePDF(data) {
         console.log("Right Position Array:", rightPositionArray);
       }
 
+      // 좌측 HTML 구성
+      leftHtml = leftPositionArray
+        .map(
+          (question) =>
+            `<div class="left">문제 ${question.id}. ${question.content}</div>`
+        )
+        .join("");
+      console.log("leftHtml:", leftHtml);
+
       // 우측 HTML 구성
       if (rightPositionArray.length > 0) {
         rightPositionArray.forEach((question) => {
           // 높이가 900을 초과하지 않는 경우 우측에 표시
           if (totalHeight + questionHeight < 900) {
-            rightHtml += `<div class="right">문제 ${question.id}. ${question.content}</div>`;
+            rightHtml = rightPositionArray
+              .map(
+                (question) =>
+                  `<div class="right">문제 ${question.id}. ${question.content}</div>`
+              )
+              .join("");
+            console.log("rightHtml:", rightHtml);
             totalHeight += questionHeight;
+            console.log("totalHeight:", totalHeight);
           } else {
             //초과한 문제 나머지 배열에 추가
             remainArray.push(question);
+            console.log("remainArray:", remainArray);
           }
         });
       }
