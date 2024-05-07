@@ -189,8 +189,8 @@ async function generatePDF(data) {
       // 페이지 초기화
       leftPositionArray = []; // 좌측 배열 초기화
       rightPositionArray = []; // 우측 배열 초기화
-      let totalLeftHeight = 0; // 좌측 배열의 초기화
-      let totalRightHeight = 0; // 우측 배열의 초기화
+      totalLeftHeight = 0; // 좌측 배열의 초기화
+      totalRightHeight = 0; // 우측 배열의 초기화
       leftHtml = "";
       rightHtml = "";
       currentPage++;
