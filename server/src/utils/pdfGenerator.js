@@ -75,11 +75,11 @@ async function generatePDF(data) {
 
   const generatePages = (questions) => {
     let remainArray = [];
+    let totalHeight = 0;
 
     questions.forEach((question) => {
       let leftHtml = ""; // 좌측에 표시할 HTML 문자열
       let rightHtml = ""; // 우측에 표시할 HTML 문자열
-      let totalHeight = 0;
       let questionHeight = 200;
       let leftPositionArray = [];
       let rightPositionArray = [];
@@ -110,8 +110,6 @@ async function generatePDF(data) {
 
       // 우측 HTML 구성
       if (rightPositionArray.length > 0) {
-        // 높이 초기화
-        totalHeight = 0;
         rightPositionArray.forEach((question) => {
           // 높이가 900을 초과하지 않는 경우 우측에 표시
           if (totalHeight + questionHeight < 900) {
@@ -165,7 +163,6 @@ async function generatePDF(data) {
       rightPositionArray = []; // 우측 배열 초기화
       leftHtml = "";
       rightHtml = "";
-      totalHeight = 0;
       currentPage++;
     });
 
