@@ -198,6 +198,15 @@ async function generatePDF(data) {
   // 함수 호출
   generatePages(questions);
 
+  const allPagesHtml = pages
+    .map(
+      (pageHtml, index) =>
+        `<!-- 페이지 ${index + 1} 시작 -->${pageHtml}<!-- 페이지 ${
+          index + 1
+        } 끝 -->`
+    )
+    .join("");
+
   // HTML 생성
   const htmlContent = ejs.render(
     `
@@ -214,7 +223,7 @@ async function generatePDF(data) {
   <body>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    ${pages.join("")}
+    ${allPagesHtml}
   </body>
   </html>
 `,
