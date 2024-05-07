@@ -19,22 +19,22 @@ async function generatePDF(data) {
     { id: 12, content: data.content },
     { id: 13, content: data.content },
     { id: 14, content: data.content },
-    { id: 15, content: data.content },
-    { id: 16, content: data.content },
-    { id: 17, content: data.content },
-    { id: 18, content: data.content },
-    { id: 19, content: data.content },
-    { id: 20, content: data.content },
-    { id: 21, content: data.content },
-    { id: 22, content: data.content },
-    { id: 23, content: data.content },
-    { id: 24, content: data.content },
-    { id: 25, content: data.content },
-    { id: 26, content: data.content },
-    { id: 27, content: data.content },
-    { id: 28, content: data.content },
-    { id: 29, content: data.content },
-    { id: 30, content: data.content },
+    // { id: 15, content: data.content },
+    // { id: 16, content: data.content },
+    // { id: 17, content: data.content },
+    // { id: 18, content: data.content },
+    // { id: 19, content: data.content },
+    // { id: 20, content: data.content },
+    // { id: 21, content: data.content },
+    // { id: 22, content: data.content },
+    // { id: 23, content: data.content },
+    // { id: 24, content: data.content },
+    // { id: 25, content: data.content },
+    // { id: 26, content: data.content },
+    // { id: 27, content: data.content },
+    // { id: 28, content: data.content },
+    // { id: 29, content: data.content },
+    // { id: 30, content: data.content },
   ];
 
   const cssStyles = `
@@ -110,6 +110,7 @@ async function generatePDF(data) {
       totalHeight += questionHeight;
 
       // 좌측과 우측 배열을 콘솔에 출력
+      console.log("totalHeight:", totalHeight);
       console.log("Left Position Array:", leftPositionArray);
       console.log("Right Position Array:", rightPositionArray);
 
