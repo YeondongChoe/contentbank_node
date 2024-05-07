@@ -110,7 +110,8 @@ async function generatePDF(data) {
     }
 
     let remainArray = [];
-    let totalHeight = 0;
+    let totalLeftHeight = 0; // 좌측 배열의 높이
+    let totalRightHeight = 0; // 우측 배열의 높이
 
     questions.forEach((question) => {
       let leftHtml = ""; // 좌측에 표시할 HTML 문자열
@@ -120,7 +121,7 @@ async function generatePDF(data) {
       let rightPositionArray = [];
 
       // 높이가 900을 초과하는 경우 우측배열 추가
-      if (totalHeight + questionHeight > 900) {
+      if (totalLeftHeight + questionHeight > 900) {
         //초과한 문제 우측 배열에 추가
         rightPositionArray.push(question);
         console.log("Right Position Array:", rightPositionArray);
@@ -130,8 +131,8 @@ async function generatePDF(data) {
         console.log("Left Position Array:", leftPositionArray);
 
         // 높이 추가
-        totalHeight += questionHeight;
-        console.log("totalHeight:", totalHeight);
+        totalLeftHeight += questionHeight;
+        console.log("totalLeftHeight:", totalLeftHeight);
       }
       //좌측 좌측 HTML 구성
       leftPositionArray.forEach((question) => {
@@ -152,7 +153,7 @@ async function generatePDF(data) {
       if (rightPositionArray.length > 0) {
         rightPositionArray.forEach((question) => {
           // 높이가 900을 초과하는 경우
-          if (totalHeight + questionHeight > 900) {
+          if (totalRightHeight + questionHeight > 900) {
             //초과한 문제 나머지 배열에 추가
             remainArray.push(question);
             console.log("remainArray:", remainArray);
@@ -168,8 +169,8 @@ async function generatePDF(data) {
             //   )
             //   .join("");
             // console.log("rightHtml:", rightHtml);
-            totalHeight += questionHeight;
-            console.log("totalHeight:", totalHeight);
+            totalRightHeight += questionHeight;
+            console.log("totalRightHeight:", totalRightHeight);
             pageHtml += "</div></div>";
           }
         });
@@ -186,8 +187,10 @@ async function generatePDF(data) {
       pages.push(pageHtml);
 
       // 페이지 초기화
-      leftPositionArray = [];
+      leftPositionArray = []; // 좌측 배열 초기화
       rightPositionArray = []; // 우측 배열 초기화
+      let totalLeftHeight = 0; // 좌측 배열의 초기화
+      let totalRightHeight = 0; // 우측 배열의 초기화
       leftHtml = "";
       rightHtml = "";
       currentPage++;
@@ -238,7 +241,7 @@ async function generatePDF(data) {
 
   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   const page = await browser.newPage();
-  await page.setDefaultNavigationTimeout(60000);
+  //await page.setDefaultNavigationTimeout(60000);
   await page.setContent(htmlContent);
 
   const pdfBuffer = await page.pdf();
