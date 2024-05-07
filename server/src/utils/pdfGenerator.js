@@ -72,8 +72,35 @@ async function generatePDF(data) {
 
   let currentPage = 1; // 현재 페이지
   let pages = []; // 각 페이지의 HTML을 저장할 배열
+  let pageHtml = "";
 
   const generatePages = (questions) => {
+    // 페이지 HTML 구성
+    if (currentPage === 1) {
+      pageHtml += `
+    <div class="page">
+      <div class="header">
+        <div class="headerLeft">
+          <div class="leftTop">
+            <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
+            <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
+          </div>
+          <div class="leftBottom">
+            <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+          </div>
+        </div>
+        <div class="headerRight">
+          <div>이미지</div>
+          <div class="inputWrapper">
+            <div style="font-size: 14px;">2024.02.27 이름</div>
+            <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
+          </div>
+        </div>
+      </div>
+  `;
+    }
+    pageHtml += '<div class="viewer" style="height: 950px;">';
+
     let remainArray = [];
     let totalHeight = 0;
 
@@ -98,30 +125,39 @@ async function generatePDF(data) {
         rightPositionArray.push(question);
         console.log("Right Position Array:", rightPositionArray);
       }
-
+      //좌측 좌측 HTML 구성
+      leftPositionArray.forEach((question) => {
+        const questionHtml = `<div class="left">문제 ${question.id}. ${question.content}</div>`;
+        leftHtml += questionHtml;
+        pageHtml += `<div class="left">${leftHtml}</div>`;
+      });
       // 좌측 HTML 구성
-      leftHtml = leftPositionArray
-        .map(
-          (question) =>
-            `<div class="left">문제 ${question.id}. ${question.content}</div>`
-        )
-        .join("");
-      console.log("leftHtml:", leftHtml);
+      // leftHtml = leftPositionArray
+      //   .map(
+      //     (question) =>
+      //       `<div class="left">문제 ${question.id}. ${question.content}</div>`
+      //   )
+      //   .join("");
+      // console.log("leftHtml:", leftHtml);
 
       // 우측 HTML 구성
       if (rightPositionArray.length > 0) {
         rightPositionArray.forEach((question) => {
           // 높이가 900을 초과하지 않는 경우 우측에 표시
           if (totalHeight + questionHeight < 900) {
-            rightHtml = rightPositionArray
-              .map(
-                (question) =>
-                  `<div class="right">문제 ${question.id}. ${question.content}</div>`
-              )
-              .join("");
-            console.log("rightHtml:", rightHtml);
+            const questionHtml = `<div class="right">문제 ${question.id}. ${question.content}</div>`;
+            rightHtml += questionHtml;
+            pageHtml += `<div class="right">${rightHtml}</div>`;
+            // rightHtml = rightPositionArray
+            //   .map(
+            //     (question) =>
+            //       `<div class="right">문제 ${question.id}. ${question.content}</div>`
+            //   )
+            //   .join("");
+            // console.log("rightHtml:", rightHtml);
             totalHeight += questionHeight;
             console.log("totalHeight:", totalHeight);
+            pageHtml += "</div></div>";
           } else {
             //초과한 문제 나머지 배열에 추가
             remainArray.push(question);
@@ -130,39 +166,13 @@ async function generatePDF(data) {
         });
       }
 
-      // 페이지 HTML 구성
-      let pageHtml = "";
-      if (currentPage === 1) {
-        pageHtml += `
-        <div class="page">
-          <div class="header">
-            <div class="headerLeft">
-              <div class="leftTop">
-                <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
-                <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
-              </div>
-              <div class="leftBottom">
-                <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
-              </div>
-            </div>
-            <div class="headerRight">
-              <div>이미지</div>
-              <div class="inputWrapper">
-                <div style="font-size: 14px;">2024.02.27 이름</div>
-                <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
-              </div>
-            </div>
-          </div>
-      `;
-      }
-
-      pageHtml += `
-        <div class="viewer">
-          <div class="left">${leftHtml}</div>
-          <div class="right">${rightHtml}</div>
-        </div>
-      </div>
-    `;
+      //   pageHtml += `
+      //     <div class="viewer">
+      //       <div class="left">${leftHtml}</div>
+      //       <div class="right">${rightHtml}</div>
+      //     </div>
+      //   </div>
+      // `;
 
       pages.push(pageHtml);
 
@@ -240,7 +250,7 @@ module.exports = generatePDF;
 //   }
 // }
 
-// let currentPage = 1; // 현재 페이지
+//   let currentPage = 1; // 현재 페이지
 //   let pageHtml = ""; // 페이지 HTML 초기화
 //   let pages = []; // 각 페이지의 HTML을 저장할 배열
 
