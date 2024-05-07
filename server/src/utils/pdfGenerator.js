@@ -110,14 +110,22 @@ async function generatePDF(data) {
       }
 
       // 좌측과 우측 배열을 콘솔에 출력
-      console.log("totalHeight:", totalHeight);
+      console.log(
+        "totalHeight += questionHeight:",
+        (totalHeight += questionHeight)
+      );
       console.log("Left Position Array:", leftPositionArray);
       console.log("Right Position Array:", rightPositionArray);
 
       // 좌측 HTML 구성
       leftHtml = leftPositionArray
-        .map((q) => `<div class="left">문제 ${q.id}. ${q.content}</div>`)
+        .map(
+          (question) =>
+            `<div class="left">문제 ${question.id}. ${question.content}</div>`
+        )
         .join("");
+
+      console.log("leftHtml:", leftHtml);
 
       totalHeight = 0; // 높이 초기화
       // 우측 HTML 구성
