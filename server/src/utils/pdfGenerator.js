@@ -29,6 +29,9 @@ async function generatePDF(data) {
     body {
       font-family: Consolas, monaco;
     }
+    .pageWrapper {
+      display: flex;
+    }
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
@@ -76,25 +79,26 @@ async function generatePDF(data) {
   // 페이지 HTML 구성
   if (currentPage === 1) {
     pageHtml += `
-    <div class="page">
-      <div class="header">
-        <div class="headerLeft">
-          <div class="leftTop">
-            <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
-            <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
-          </div>
-          <div class="leftBottom">
-            <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+    
+      <div class="page">
+        <div class="header">
+          <div class="headerLeft">
+            <div class="leftTop">
+              <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
+              <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
+            </div>
+            <div class="leftBottom">
+              <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+            </div>
+         </div>
+          <div class="headerRight">
+            <div>이미지</div>
+            <div class="inputWrapper">
+              <div style="font-size: 14px;">2024.02.27 이름</div>
+             <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
+           </div>
           </div>
         </div>
-        <div class="headerRight">
-          <div>이미지</div>
-          <div class="inputWrapper">
-            <div style="font-size: 14px;">2024.02.27 이름</div>
-            <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
-          </div>
-        </div>
-      </div>
   `;
   }
   pageHtml += '<div class="viewer" style="height: 950px;">';
@@ -102,7 +106,7 @@ async function generatePDF(data) {
   const generatePages = (questions) => {
     if (currentPage !== 1) {
       pageHtml +=
-        '<div class="page"></div><div class="viewer" style="height: 950px;">';
+        '<div class="page"><div class="viewer" style="height: 950px;">';
     }
 
     let remainArray = [];
