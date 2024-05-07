@@ -72,9 +72,9 @@ async function generatePDF(data) {
 
   let currentPage = 1; // 현재 페이지
   let pages = []; // 각 페이지의 HTML을 저장할 배열
-  let pageHtml = "";
 
   const generatePages = (questions) => {
+    let pageHtml = "";
     // 페이지 HTML 구성
     if (currentPage === 1) {
       pageHtml += `
