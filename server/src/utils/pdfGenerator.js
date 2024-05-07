@@ -103,19 +103,19 @@ async function generatePDF(data) {
       if (totalHeight + questionHeight < 900) {
         // 좌측 배열에 추가
         leftPositionArray.push(question);
+        // 높이 추가
         totalHeight += questionHeight;
+        // 좌측과 우측 배열을 콘솔에 출력
+        console.log(
+          "totalHeight += questionHeight:",
+          (totalHeight += questionHeight)
+        );
+        console.log("Left Position Array:", leftPositionArray);
       } else {
         //초과한 문제 우측 배열에 추가
         rightPositionArray.push(question);
+        console.log("Right Position Array:", rightPositionArray);
       }
-
-      // 좌측과 우측 배열을 콘솔에 출력
-      console.log(
-        "totalHeight += questionHeight:",
-        (totalHeight += questionHeight)
-      );
-      console.log("Left Position Array:", leftPositionArray);
-      console.log("Right Position Array:", rightPositionArray);
 
       // 좌측 HTML 구성
       leftHtml = leftPositionArray
@@ -127,9 +127,9 @@ async function generatePDF(data) {
 
       console.log("leftHtml:", leftHtml);
 
-      totalHeight = 0; // 높이 초기화
       // 우측 HTML 구성
       if (rightPositionArray.length > 0) {
+        totalHeight = 0; // 높이 초기화
         rightPositionArray.forEach((question) => {
           // 높이가 900을 초과하지 않는 경우 우측에 표시
           if (totalHeight + questionHeight < 900) {
