@@ -170,7 +170,7 @@ async function generatePDF(data) {
             // console.log("rightHtml:", rightHtml);
             totalHeight += questionHeight;
             console.log("totalHeight:", totalHeight);
-            pageHtml += "</div></div></div>";
+            pageHtml += "</div></div>";
           }
         });
       }
@@ -196,6 +196,8 @@ async function generatePDF(data) {
     // RemainArray에 남은 문제가 있는지 확인하여 처리
     if (remainArray.length > 0) {
       generatePages(remainArray); // 재귀 호출로 추가 페이지 생성
+    } else {
+      pageHtml += "</div>";
     }
   };
 
