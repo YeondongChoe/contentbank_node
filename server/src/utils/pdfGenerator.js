@@ -72,12 +72,10 @@ async function generatePDF(data) {
 
   let currentPage = 1; // 현재 페이지
   let pages = []; // 각 페이지의 HTML을 저장할 배열
-
-  const generatePages = (questions) => {
-    let pageHtml = "";
-    // 페이지 HTML 구성
-    if (currentPage === 1) {
-      pageHtml += `
+  let pageHtml = "";
+  // 페이지 HTML 구성
+  if (currentPage === 1) {
+    pageHtml += `
     <div class="page">
       <div class="header">
         <div class="headerLeft">
@@ -98,9 +96,10 @@ async function generatePDF(data) {
         </div>
       </div>
   `;
-    }
-    pageHtml += '<div class="viewer" style="height: 950px;">';
+  }
+  pageHtml += '<div class="viewer" style="height: 950px;">';
 
+  const generatePages = (questions) => {
     let remainArray = [];
     let totalHeight = 0;
 
