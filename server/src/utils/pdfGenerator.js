@@ -156,16 +156,16 @@ async function generatePDF(data) {
     // 좌측 배열의 HTML 생성
     const leftHtml = leftArray
       .map(
-        (question) =>
-          `<div class="left">문제 ${question.id}. ${question.content}</div>`
+        (item) =>
+          `<div class="left">문제 ${item.question.id}. ${item.question.content}</div>`
       )
       .join("");
 
     // 우측 배열의 HTML 생성
     const rightHtml = rightArray
       .map(
-        (question) =>
-          `<div class="left">문제 ${question.id}. ${question.content}</div>`
+        (item) =>
+          `<div class="left">문제 ${item.question.id}. ${item.question.content}</div>`
       )
       .join("");
 
