@@ -58,13 +58,12 @@ async function generatePDF(data) {
     }
     .wrapper {
       display: flex;
+      flex: 1;
       flex-direction: column;
+      padding: 20px;
     }
     .left, .right {
-      flex: 1;
-      box-sizing: border-box;
       display: flex;
-      padding: 20px;
     }
     .center {
       display: flex;
