@@ -162,15 +162,12 @@ async function generatePDF(data) {
       .join("");
 
     // 우측 배열의 HTML 생성
-    let rightHtml = "";
-    if (rightArray.length > 0) {
-      rightHtml = rightArray.question
-        .map(
-          (question) =>
-            `<div class="right">문제 ${question.id}. ${question.content}</div>`
-        )
-        .join("");
-    }
+    const rightHtml = rightArray.question
+      .map(
+        (question) =>
+          `<div class="left">문제 ${question.id}. ${question.content}</div>`
+      )
+      .join("");
 
     pageHtml += `<div class="wrapper">${leftHtml}</div>`;
     pageHtml += `<div class="wrapper">${rightHtml}</div>`;
