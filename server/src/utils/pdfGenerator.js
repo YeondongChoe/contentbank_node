@@ -84,6 +84,7 @@ async function generatePDF(data) {
     let rightArray = []; // 우측 배열
     let balanceArray = []; // 밸런스 배열
     let currentPage = 1; // 현재 페이지 번호
+    let totalHeight = 0; // 현재까지의 높이
 
     questions.forEach((question) => {
       const questionHeight = 200; // 문항의 높이
