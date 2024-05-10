@@ -11,10 +11,10 @@ async function generatePDF(data) {
     { id: 4, content: data.content },
     { id: 5, content: data.content },
     { id: 6, content: data.content },
-    { id: 7, content: data.content },
-    { id: 8, content: data.content },
-    { id: 9, content: data.content },
-    { id: 10, content: data.content },
+    // { id: 7, content: data.content },
+    // { id: 8, content: data.content },
+    // { id: 9, content: data.content },
+    // { id: 10, content: data.content },
     // { id: 11, content: data.content },
     // { id: 12, content: data.content },
     // { id: 13, content: data.content },
@@ -63,7 +63,6 @@ async function generatePDF(data) {
       padding: 20px;
     }
     .left, .right {
-      display: flex;
     }
     .center {
       display: flex;
@@ -157,16 +156,16 @@ async function generatePDF(data) {
     // 좌측 배열의 HTML 생성
     const leftHtml = leftArray
       .map(
-        (item) =>
-          `<div class="left">문제 ${item.question.id}. ${item.question.content}</div>`
+        (question) =>
+          `<div class="left">문제 ${question.id}. ${question.content}</div>`
       )
       .join("");
 
     // 우측 배열의 HTML 생성
     const rightHtml = rightArray
       .map(
-        (item) =>
-          `<div class="left">문제 ${item.question.id}. ${item.question.content}</div>`
+        (question) =>
+          `<div class="left">문제 ${question.id}. ${question.content}</div>`
       )
       .join("");
 
