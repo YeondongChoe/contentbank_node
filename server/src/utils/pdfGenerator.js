@@ -91,16 +91,18 @@ async function generatePDF(data) {
       const thresholdHeight = 900; // 임계치 높이
 
       // 좌측 배열에 문항 추가
-      leftArray.push(question);
-      totalHeight += questionHeight;
-      console.log("totalHeight:", totalHeight);
+      while (totalHeight <= thresholdHeight) {
+        leftArray.push(question);
+        totalHeight += questionHeight;
+        console.log("totalHeight:", totalHeight);
+        console.log("leftArray:", leftArray);
+      }
 
       // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열에 이동
       if (totalHeight > thresholdHeight) {
         const numToMove =
           Math.ceil(totalHeight / questionHeight) -
           Math.ceil(thresholdHeight / questionHeight);
-        console.log("numToMove:", numToMove);
         rightArray.unshift(
           ...leftArray.splice(leftArray.length - numToMove, numToMove)
         );
@@ -110,7 +112,6 @@ async function generatePDF(data) {
         console.log("leftArray:", leftArray);
         console.log("rightArray:", rightArray);
         console.log("currentPage:", currentPage);
-        //console.log("totalHeight:", totalHeight);
       }
 
       // 현재 페이지가 1이 아니고 우측 배열이 있으면 좌측 배열에 우측 배열 추가
