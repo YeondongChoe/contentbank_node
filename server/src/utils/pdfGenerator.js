@@ -102,7 +102,7 @@ async function generatePDF(data) {
         );
         console.log("numToMove:", numToMove);
         rightArray.unshift(
-          ...leftArray.splice(leftArray.length - numToMove, numToMove)
+          ...leftArray.splice(numToMove, leftArray.length - numToMove)
         );
         pages.push(generatePage(leftArray, rightArray, currentPage));
         currentPage++;
