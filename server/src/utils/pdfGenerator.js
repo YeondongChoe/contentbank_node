@@ -134,7 +134,7 @@ async function generatePDF(data) {
             </div>
           </div>
           <div class="headerRight">
-            <div>이미지</div>
+            <div>이미지.</div>
             <div class="inputWrapper">
               <div style="font-size: 14px;">2024.02.27 이름</div>
               <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
