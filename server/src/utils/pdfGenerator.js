@@ -11,12 +11,12 @@ async function generatePDF(data) {
     { id: 4, content: data.content },
     { id: 5, content: data.content },
     { id: 6, content: data.content },
-    { id: 7, content: data.content },
-    { id: 8, content: data.content },
-    { id: 9, content: data.content },
-    { id: 10, content: data.content },
-    { id: 11, content: data.content },
-    { id: 12, content: data.content },
+    // { id: 7, content: data.content },
+    // { id: 8, content: data.content },
+    // { id: 9, content: data.content },
+    // { id: 10, content: data.content },
+    // { id: 11, content: data.content },
+    // { id: 12, content: data.content },
     // { id: 13, content: data.content },
     // { id: 14, content: data.content },
   ];
@@ -90,21 +90,23 @@ async function generatePDF(data) {
       const questionHeight = 200; // 문항의 높이
       const thresholdHeight = 900; // 임계치 높이
       allArray.push(question);
+      console.log("allArray:", allArray);
 
       // 좌측 배열에 문항 추가
       const newTotalHeight = totalHeight + questionHeight;
       if (newTotalHeight <= thresholdHeight) {
         leftArray.push(question);
         totalHeight = newTotalHeight;
-        console.log("totalHeight:", totalHeight);
         console.log("leftArray:", leftArray);
+        console.log("totalHeight:", totalHeight);
       } else {
         // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열로 이동
         const numToMove =
-          Math.ceil(newTotalHeight / questionHeight) -
+          Math.ceil((totalHeight + questionHeight) / questionHeight) -
           Math.ceil(thresholdHeight / questionHeight);
+        console.log("numToMove:", numToMove);
         rightArray.unshift(
-          ...allArray.splice(leftArray.length - numToMove, numToMove)
+          ...allArray.splice(allArray.length - numToMove, numToMove)
         );
         console.log("rightArray:", rightArray);
         pages.push(generatePage(leftArray, rightArray, currentPage));
