@@ -61,7 +61,6 @@ async function generatePDF(data) {
       flex-direction: column;
     }
     .left, .right {
-      display: flex;
       padding: 20px;
     }
     .center {
@@ -78,63 +77,6 @@ async function generatePDF(data) {
   // display: flex;
   // flex-direction: column;
 
-  // const generatePagesHtml = (questions) => {
-  //   const pages = []; // 각 페이지의 HTML을 저장할 배열
-  //   let leftArray = []; // 좌측 배열
-  //   let rightArray = []; // 우측 배열
-  //   let balanceArray = []; // 밸런스 배열
-
-  //   let totalHeight = 0; // 현재까지의 높이
-  //   let currentPage = 1; // 현재 페이지 번호
-
-  //   questions.forEach((question) => {
-  //     const questionHeight = 200; // 문항의 높이
-  //     const thresholdHeight = 900; // 임계치 높이
-
-  //     // 좌측 배열에 문항 추가
-  //     leftArray.push(question);
-  //     totalHeight += questionHeight;
-
-  //     // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열에 이동
-  //     if (totalHeight > thresholdHeight) {
-  //       // 우측 배열에 추가
-  //       rightArray.push(question);
-  //       // 우측 배열의 높이 계산
-  //       const rightTotalHeight = rightArray.length * questionHeight;
-  //       // 우측 배열의 높이가 일정 높이를 초과하면 밸런스 배열에 이동
-  //       if (rightTotalHeight > thresholdHeight) {
-  //         balanceArray.push(question);
-  //       }
-  //     }
-  //     console.log("leftArray:", leftArray);
-  //     console.log("rightArray:", rightArray);
-  //     console.log("balanceArray:", balanceArray);
-  //     console.log("currentPage:", currentPage);
-
-  //     // 좌우 배열이 완성된 페이지 생성
-  //     if (leftArray.length > 0 && rightArray.length > 0) {
-  //       const pageHtml = generatePage(leftArray, rightArray);
-  //       pages.push(pageHtml);
-  //       currentPage++;
-  //       leftArray = [];
-  //       rightArray = [];
-  //     }
-  //   });
-
-  //   // 남은 문항이 있는 경우 처리
-  //   if (balanceArray.length > 0) {
-  //     // 재귀 호출을 통해 추가 페이지 생성
-  //     pages.push(...generatePagesHtml(balanceArray));
-  //   } else {
-  //     // 남은 문항이 없는 경우 마지막 페이지 생성
-  //     if (leftArray.length > 0) {
-  //       const pageHtml = generatePage(leftArray, rightArray, currentPage);
-  //       pages.push(pageHtml);
-  //     }
-  //   }
-
-  //   return pages;
-  // };
   const generatePagesHtml = (questions) => {
     const pages = []; // 각 페이지의 HTML을 저장할 배열
     let leftArray = []; // 좌측 배열
@@ -204,7 +146,7 @@ async function generatePDF(data) {
     const leftHtml = leftArray
       .map(
         (question) =>
-          `<div class="wrapper"><div class="left">문제 ${question.id}. ${question.content}</div></div>`
+          `<div class="left">문제 ${question.id}. ${question.content}</div>`
       )
       .join("");
 
@@ -212,12 +154,12 @@ async function generatePDF(data) {
     const rightHtml = rightArray
       .map(
         (question) =>
-          `<div class="wrapper"><div class="right">문제 ${question.id}. ${question.content}</div></div>`
+          `<div class="right">문제 ${question.id}. ${question.content}</div>`
       )
       .join("");
 
-    pageHtml += leftHtml;
-    pageHtml += rightHtml;
+    pageHtml += `<div class="wrapper">${leftHtml}</div>`;
+    pageHtml += `<div class="wrapper">${rightHtml}</div>`;
 
     pageHtml += `
       </div>
