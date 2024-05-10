@@ -92,6 +92,7 @@ async function generatePDF(data) {
       totalHeight += questionHeight;
       return questionWithHeight;
     });
+    console.log("allArray:", allArray);
 
     // allArray 생성 및 조건에 따른 배열 분배
     while (true) {
