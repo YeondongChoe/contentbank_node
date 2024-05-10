@@ -101,6 +101,10 @@ async function generatePDF(data) {
           balanceArray.push(question);
         }
       }
+      console.log(leftArray);
+      console.log(rightArray);
+      console.log(balanceArray);
+      console.log(currentPage);
 
       // 좌우 배열이 완성된 페이지 생성
       if (leftArray.length > 0 && rightArray.length > 0) {
