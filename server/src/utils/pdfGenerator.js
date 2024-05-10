@@ -60,6 +60,8 @@ async function generatePDF(data) {
       display: flex;
     }
     .left, .right {
+      display: flex;
+      flex-direction: column;
       flex: 1;
       box-sizing: border-box;
       padding: 20px;
@@ -161,6 +163,9 @@ async function generatePDF(data) {
     if (leftArray.length > 0) {
       pages.push(generatePage(leftArray, rightArray, currentPage));
     }
+    console.log("leftArray:", leftArray);
+    console.log("rightArray:", rightArray);
+    console.log("currentPage:", currentPage);
 
     return pages;
   };
