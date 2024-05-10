@@ -63,7 +63,6 @@ async function generatePDF(data) {
       padding: 20px;
     }
     .left, .right {
-      display: flex;
     }
     .center {
       display: flex;
@@ -98,9 +97,9 @@ async function generatePDF(data) {
 
       // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열에 이동
       if (totalHeight > thresholdHeight) {
-        const numToMove =
-          Math.ceil(totalHeight / questionHeight) -
-          Math.floor(thresholdHeight / questionHeight);
+        const numToMove = Math.ceil(
+          (totalHeight - thresholdHeight) / questionHeight
+        );
         console.log("numToMove:", numToMove);
         rightArray.unshift(
           ...leftArray.splice(leftArray.length - numToMove, numToMove)
@@ -144,7 +143,7 @@ async function generatePDF(data) {
             </div>
           </div>
           <div class="headerRight">
-            <div>이미지.</div>
+            <div>이미지</div>
             <div class="inputWrapper">
               <div style="font-size: 14px;">2024.02.27 이름</div>
               <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
