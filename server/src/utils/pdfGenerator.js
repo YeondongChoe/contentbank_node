@@ -12,13 +12,13 @@ async function generatePDF(data) {
     { id: 5, content: data.content },
     { id: 6, content: data.content },
     { id: 7, content: data.content },
-    { id: 8, content: data.content },
-    { id: 9, content: data.content },
-    { id: 10, content: data.content },
-    { id: 11, content: data.content },
-    { id: 12, content: data.content },
-    { id: 13, content: data.content },
-    { id: 14, content: data.content },
+    // { id: 8, content: data.content },
+    // { id: 9, content: data.content },
+    // { id: 10, content: data.content },
+    // { id: 11, content: data.content },
+    // { id: 12, content: data.content },
+    // { id: 13, content: data.content },
+    // { id: 14, content: data.content },
   ];
 
   const cssStyles = `
@@ -61,6 +61,7 @@ async function generatePDF(data) {
       flex-direction: column;
     }
     .left, .right {
+      display: flex;
       padding: 20px;
     }
     .center {
@@ -90,15 +91,25 @@ async function generatePDF(data) {
 
       // 좌측 배열에 문항 추가
       leftArray.push(question);
+      totalHeight += questionHeight;
+      console.log("totalHeight:", totalHeight);
 
       // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열에 이동
-      if (leftArray.length % 4 === 0) {
-        rightArray = leftArray.splice(0, 2);
+      if (totalHeight > thresholdHeight) {
+        const numToMove =
+          Math.ceil(totalHeight / questionHeight) -
+          Math.floor(thresholdHeight / questionHeight);
+        console.log("numToMove:", numToMove);
+        rightArray.unshift(
+          ...leftArray.splice(leftArray.length - numToMove, numToMove)
+        );
         pages.push(generatePage(leftArray, rightArray, currentPage));
         currentPage++;
+        totalHeight = 0; // 높이 초기화
         console.log("leftArray:", leftArray);
         console.log("rightArray:", rightArray);
         console.log("currentPage:", currentPage);
+        //console.log("totalHeight:", totalHeight);
       }
 
       // 현재 페이지가 1이 아니고 우측 배열이 있으면 좌측 배열에 우측 배열 추가
@@ -111,9 +122,6 @@ async function generatePDF(data) {
     if (leftArray.length > 0) {
       pages.push(generatePage(leftArray, rightArray, currentPage));
     }
-    // console.log("leftArray:", leftArray);
-    // console.log("rightArray:", rightArray);
-    // console.log("currentPage:", currentPage);
 
     return pages;
   };
