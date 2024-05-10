@@ -80,45 +80,45 @@ async function generatePDF(data) {
 
   const generatePagesHtml = (questions) => {
     const pages = []; // 각 페이지의 HTML을 저장할 배열
+    let currentPage = 1; // 현재 페이지 번호
     let leftArray = []; // 좌측 배열
     let rightArray = []; // 우측 배열
-    let allArray = []; // 밸런스 배열
-    let currentPage = 1; // 현재 페이지 번호
     let totalHeight = 0; // 현재까지의 높이
+    const questionHeight = 200;
+    let allArray = []; // 모든 배열
 
-    questions.forEach((question) => {
-      const questionHeight = 200; // 문항의 높이
-      const thresholdHeight = 900; // 임계치 높이
-      allArray.push(question);
-      console.log("allArray:", allArray);
-
-      // 좌측 배열에 문항 추가
-      const newTotalHeight = totalHeight + questionHeight;
-      if (newTotalHeight <= thresholdHeight) {
-        leftArray.push(question);
-        totalHeight = newTotalHeight;
-        console.log("leftArray:", leftArray);
-        console.log("totalHeight:", totalHeight);
-      } else {
-        // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열로 이동
-        const numToMove =
-          Math.ceil((totalHeight + questionHeight) / questionHeight) -
-          Math.ceil(thresholdHeight / questionHeight);
-        console.log("numToMove:", numToMove);
-        rightArray.unshift(
-          ...allArray.splice(allArray.length - numToMove, numToMove)
-        );
-        console.log("rightArray:", rightArray);
-        pages.push(generatePage(leftArray, rightArray, currentPage));
-        currentPage++;
-        totalHeight = 0; // 높이 초기화
-      }
+    allArray = questions.map((question) => {
+      const questionWithHeight = { question, totalHeight };
+      totalHeight += questionHeight;
+      return questionWithHeight;
     });
 
-    // 마지막 페이지 처리
-    if (leftArray.length > 0) {
-      pages.push(generatePage(leftArray, rightArray, currentPage));
+    // allArray 생성 및 조건에 따른 배열 분배
+    while (true) {
+      // leftArray에 높이가 800까지인 문항 넣기
+      leftArray = allArray.filter((item) => item.totalHeight <= 800);
+
+      // rightArray에 높이가 800초과 1600까지인 문항 넣기
+      rightArray = allArray.filter(
+        (item) => item.totalHeight > 800 && item.totalHeight <= 1600
+      );
+
+      // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
+      const remainingItems = allArray.filter((item) => item.totalHeight > 1600);
+      if (remainingItems.length === 0) break;
+
+      // allArray 덮어쓰기
+      //totalHeight = 0;
+      allArray = remainingItems.map((item) => {
+        const questionWithHeight = { question: item.question, totalHeight };
+        totalHeight += questionHeight;
+        return questionWithHeight;
+      });
     }
+
+    // 페이지 생성
+    pages.push(generatePage(leftArray, rightArray, currentPage));
+    currentPage++;
 
     return pages;
   };
