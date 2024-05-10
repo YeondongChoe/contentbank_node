@@ -164,12 +164,15 @@ async function generatePDF(data) {
       .join("");
 
     // 우측 배열의 HTML 생성
-    const rightHtml = rightArray
-      .map(
-        (question) =>
-          `<div class="right">문제 ${question.id}. ${question.content}</div>`
-      )
-      .join("");
+    let rightHtml = "";
+    if (rightArray.length > 0) {
+      rightHtml = rightArray
+        .map(
+          (question) =>
+            `<div class="right">문제 ${question.id}. ${question.content}</div>`
+        )
+        .join("");
+    }
 
     pageHtml += `<div class="wrapper">${leftHtml}</div>`;
     pageHtml += `<div class="wrapper">${rightHtml}</div>`;
@@ -197,7 +200,7 @@ async function generatePDF(data) {
   <body>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    ${pageHtml}
+    ${generatePagesHtml(questions).join("")}
   </body>
   </html>
 `,
