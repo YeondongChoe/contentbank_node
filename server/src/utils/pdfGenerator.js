@@ -29,9 +29,6 @@ async function generatePDF(data) {
     body {
       font-family: Consolas, monaco;
     }
-    .pageWrapper {
-      display: flex;
-    }
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
@@ -65,6 +62,7 @@ async function generatePDF(data) {
       flex: 1;
       box-sizing: border-box;
       padding: 20px;
+      height: 900px;
     }
     .center {
       display: flex;
