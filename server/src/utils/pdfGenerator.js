@@ -92,10 +92,13 @@ async function generatePDF(data) {
       leftArray.push(question);
 
       // 좌측 배열의 높이가 일정 높이를 초과하면 우측 배열에 이동
-      if (leftArray.length >= 4 && leftArray.length % 4 === 0) {
-        rightArray = leftArray.splice(0, 4);
+      if (leftArray.length % 4 === 0) {
+        rightArray = leftArray.splice(0, 2);
         pages.push(generatePage(leftArray, rightArray, currentPage));
         currentPage++;
+        console.log("leftArray:", leftArray);
+        console.log("rightArray:", rightArray);
+        console.log("currentPage:", currentPage);
       }
 
       // 현재 페이지가 1이 아니고 우측 배열이 있으면 좌측 배열에 우측 배열 추가
@@ -108,9 +111,9 @@ async function generatePDF(data) {
     if (leftArray.length > 0) {
       pages.push(generatePage(leftArray, rightArray, currentPage));
     }
-    console.log("leftArray:", leftArray);
-    console.log("rightArray:", rightArray);
-    console.log("currentPage:", currentPage);
+    // console.log("leftArray:", leftArray);
+    // console.log("rightArray:", rightArray);
+    // console.log("currentPage:", currentPage);
 
     return pages;
   };
