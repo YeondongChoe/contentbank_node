@@ -82,13 +82,14 @@ async function generatePDF(data) {
     const pages = []; // 각 페이지의 HTML을 저장할 배열
     let leftArray = []; // 좌측 배열
     let rightArray = []; // 우측 배열
-    let balanceArray = []; // 밸런스 배열
+    let allArray = []; // 밸런스 배열
     let currentPage = 1; // 현재 페이지 번호
     let totalHeight = 0; // 현재까지의 높이
 
     questions.forEach((question) => {
       const questionHeight = 200; // 문항의 높이
       const thresholdHeight = 900; // 임계치 높이
+      allArray.push(question);
 
       // 좌측 배열에 문항 추가
       const newTotalHeight = totalHeight + questionHeight;
@@ -103,8 +104,9 @@ async function generatePDF(data) {
           Math.ceil(newTotalHeight / questionHeight) -
           Math.ceil(thresholdHeight / questionHeight);
         rightArray.unshift(
-          ...leftArray.splice(leftArray.length - numToMove, numToMove)
+          ...allArray.splice(leftArray.length - numToMove, numToMove)
         );
+        console.log("rightArray:", rightArray);
         pages.push(generatePage(leftArray, rightArray, currentPage));
         currentPage++;
         totalHeight = 0; // 높이 초기화
