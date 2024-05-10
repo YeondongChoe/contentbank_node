@@ -154,7 +154,7 @@ async function generatePDF(data) {
     pageHtml += `<div class="viewer">`;
 
     // 좌측 배열의 HTML 생성
-    const leftHtml = leftArray
+    const leftHtml = leftArray.question
       .map(
         (question) =>
           `<div class="left">문제 ${question.id}. ${question.content}</div>`
@@ -164,7 +164,7 @@ async function generatePDF(data) {
     // 우측 배열의 HTML 생성
     let rightHtml = "";
     if (rightArray.length > 0) {
-      rightHtml = rightArray
+      rightHtml = rightArray.question
         .map(
           (question) =>
             `<div class="right">문제 ${question.id}. ${question.content}</div>`
