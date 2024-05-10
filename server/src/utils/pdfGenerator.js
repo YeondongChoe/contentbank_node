@@ -98,11 +98,13 @@ async function generatePDF(data) {
     while (true) {
       // leftArray에 높이가 800까지인 문항 넣기
       leftArray = allArray.filter((item) => item.totalHeight <= 800);
+      console.log("leftArray:", leftArray);
 
       // rightArray에 높이가 800초과 1600까지인 문항 넣기
       rightArray = allArray.filter(
         (item) => item.totalHeight > 800 && item.totalHeight <= 1600
       );
+      console.log("rightArray:", rightArray);
 
       // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
       const remainingItems = allArray.filter((item) => item.totalHeight > 1600);
