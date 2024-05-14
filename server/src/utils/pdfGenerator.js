@@ -44,6 +44,16 @@ async function generatePDF(data) {
     { id: 37, content: data.content },
     { id: 38, content: data.content },
     { id: 39, content: data.content },
+    { id: 40, content: data.content },
+    { id: 41, content: data.content },
+    { id: 42, content: data.content },
+    { id: 43, content: data.content },
+    { id: 44, content: data.content },
+    { id: 45, content: data.content },
+    { id: 46, content: data.content },
+    { id: 47, content: data.content },
+    { id: 48, content: data.content },
+    { id: 49, content: data.content },
   ];
 
   const cssStyles = `
@@ -155,7 +165,7 @@ async function generatePDF(data) {
   };
 
   const generatePage = (leftArray, rightArray, currentPage) => {
-    let pageHtml = '<div class="page">';
+    let pageHtml = '<div class="page" style="min-height: 1200px;">';
 
     if (currentPage === 1) {
       pageHtml += `
