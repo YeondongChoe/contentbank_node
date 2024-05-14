@@ -68,6 +68,7 @@ async function generatePDF(data) {
       display: inline;
     }
     .content {
+      width: 200px;
       display: inline;
     }
     .center {
@@ -163,7 +164,7 @@ async function generatePDF(data) {
     const leftHtml = leftArray
       .map(
         (item) =>
-          `<div class="left"><span class="number">${item.question.id}</span>${item.question.content}</div>`
+          `<div class="left"><span class="number">${item.question.id}</span><span class="content">${item.question.content}</span></div>`
       )
       .join("");
 
@@ -171,7 +172,7 @@ async function generatePDF(data) {
     const rightHtml = rightArray
       .map(
         (item) =>
-          `<div class="right"><span class="number">${item.question.id}</span>${item.question.content}</div>`
+          `<div class="right"><span class="number">${item.question.id}</span><span class="content">${item.question.content}</span></div>`
       )
       .join("");
 
