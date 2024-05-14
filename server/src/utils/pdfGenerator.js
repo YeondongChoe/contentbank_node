@@ -115,10 +115,16 @@ async function generatePDF(data) {
     body {
       font-family: Consolas, monaco;
     }
-    .page {
+    .firstPage {
       border: 1px solid #a3aed0;
       border-radius: 10px;
       min-height: 1050px;
+      margin-bottom: 10px;
+    }
+    .page {
+      border: 1px solid #a3aed0;
+      border-radius: 10px;
+      min-height: 1100px;
       margin-bottom: 10px;
     }
     .header {
@@ -217,7 +223,13 @@ async function generatePDF(data) {
   };
 
   const generatePage = (leftArray, rightArray, currentPage) => {
-    let pageHtml = '<div class="page">';
+    let pageHtml = "";
+
+    if (currentPage === 1) {
+      pageHtml = '<div class="firstPage">';
+    } else {
+      pageHtml = '<div class="page">';
+    }
 
     if (currentPage === 1) {
       pageHtml += `
