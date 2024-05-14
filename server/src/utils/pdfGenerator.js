@@ -74,6 +74,37 @@ async function generatePDF(data) {
     { id: 67, content: data.content },
     { id: 68, content: data.content },
     { id: 69, content: data.content },
+    { id: 70, content: data.content },
+    { id: 71, content: data.content },
+    { id: 72, content: data.content },
+    { id: 73, content: data.content },
+    { id: 74, content: data.content },
+    { id: 75, content: data.content },
+    { id: 76, content: data.content },
+    { id: 77, content: data.content },
+    { id: 78, content: data.content },
+    { id: 79, content: data.content },
+    { id: 80, content: data.content },
+    { id: 81, content: data.content },
+    { id: 82, content: data.content },
+    { id: 83, content: data.content },
+    { id: 84, content: data.content },
+    { id: 85, content: data.content },
+    { id: 86, content: data.content },
+    { id: 87, content: data.content },
+    { id: 88, content: data.content },
+    { id: 89, content: data.content },
+    { id: 90, content: data.content },
+    { id: 91, content: data.content },
+    { id: 92, content: data.content },
+    { id: 93, content: data.content },
+    { id: 94, content: data.content },
+    { id: 95, content: data.content },
+    { id: 96, content: data.content },
+    { id: 97, content: data.content },
+    { id: 98, content: data.content },
+    { id: 99, content: data.content },
+    { id: 100, content: data.content },
   ];
 
   const cssStyles = `
@@ -87,7 +118,7 @@ async function generatePDF(data) {
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
-      min-height: 1000px;
+      min-height: 100%;
       margin-bottom: 10px;
     }
     .header {
@@ -116,6 +147,7 @@ async function generatePDF(data) {
     }
     .content {
       display: flex;
+      alin
     }
     .contentWrapper {
     }
