@@ -156,12 +156,18 @@ async function generatePDF(data) {
 
     // 좌측 배열의 HTML 생성
     const leftHtml = leftArray
-      .map((item) => `<div class="content">${item.question.content}</div>`)
+      .map(
+        (item) =>
+          `${item.question.id}<div class="content">${item.question.content}</div>`
+      )
       .join("");
 
     // 우측 배열의 HTML 생성
     const rightHtml = rightArray
-      .map((item) => `<div class="content">${item.question.content}</div>`)
+      .map(
+        (item) =>
+          `${item.question.id}<div class="content">${item.question.content}</div>`
+      )
       .join("");
     //${item.question.id}
     pageHtml += `<div class="wrapper">${leftHtml}</div>`;
