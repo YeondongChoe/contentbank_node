@@ -15,7 +15,7 @@ async function generatePDF(data) {
     { id: 8, content: data.content },
     { id: 9, content: data.content },
     { id: 10, content: data.content },
-    // { id: 11, content: data.content },
+    { id: 11, content: data.content },
     // { id: 12, content: data.content },
     // { id: 13, content: data.content },
     // { id: 14, content: data.content },
@@ -106,20 +106,32 @@ async function generatePDF(data) {
         (item) => item.totalHeight > 800 && item.totalHeight <= 1600
       );
       console.log("rightArray:", rightArray);
-
-      // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
       const remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       console.log("remainingItems:", remainingItems);
       if (remainingItems.length === 0) break;
       else {
-        // allArray 덮어쓰기
-        allArray = remainingItems.map((item) => {
-          const questionWithHeight = { question: item.question, totalHeight };
-          totalHeight += questionHeight;
-          console.log("allArray:", allArray);
-          return questionWithHeight;
-        });
+        allArray = remainingItems;
+        console.log(allArray);
       }
+
+      // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
+
+      // remainingItems.forEach((question) => {
+      //   const questionWithHeight = { question, totalHeight };
+      //   totalHeight += questionHeight;
+      //   allArray.push(questionWithHeight);
+      // });
+
+      // if (remainingItems.length === 0) break;
+      // else {
+      //   // allArray 덮어쓰기
+      //   allArray = remainingItems.map((item) => {
+      //     const questionWithHeight = { question: item.question, totalHeight };
+      //     totalHeight += questionHeight;
+      //     console.log("allArray:", allArray);
+      //     return questionWithHeight;
+      //   });
+      // }
       //totalHeight = 0;
     }
 
