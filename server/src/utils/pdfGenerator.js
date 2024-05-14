@@ -64,6 +64,16 @@ async function generatePDF(data) {
     { id: 57, content: data.content },
     { id: 58, content: data.content },
     { id: 59, content: data.content },
+    { id: 60, content: data.content },
+    { id: 61, content: data.content },
+    { id: 62, content: data.content },
+    { id: 63, content: data.content },
+    { id: 64, content: data.content },
+    { id: 65, content: data.content },
+    { id: 66, content: data.content },
+    { id: 67, content: data.content },
+    { id: 68, content: data.content },
+    { id: 69, content: data.content },
   ];
 
   const cssStyles = `
@@ -105,6 +115,7 @@ async function generatePDF(data) {
       padding: 20px;
     }
     .content {
+      display: flex;
     }
     .contentWrapper {
     }
