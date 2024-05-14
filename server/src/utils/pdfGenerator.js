@@ -64,10 +64,6 @@ async function generatePDF(data) {
     }
     .left, .right {
       display: flex;
-      flex-direction: row;
-    }
-    .number, .content {
-      display: inline;
     }
     .center {
       display: flex;
@@ -162,7 +158,7 @@ async function generatePDF(data) {
     const leftHtml = leftArray
       .map(
         (item) =>
-          `<div class= "left"><span clase="number">${item.question.id}</span><span class="content">${item.question.content}</span></div>`
+          `<div class= "left">${item.question.id} ${item.question.content}</div>`
       )
       .join("");
 
@@ -170,7 +166,7 @@ async function generatePDF(data) {
     const rightHtml = rightArray
       .map(
         (item) =>
-          `<div class= "right"><span clase="number">${item.question.id}</span><span class="content">${item.question.content}</span></div>`
+          `<div class= "right">${item.question.id} ${item.question.content}</div>`
       )
       .join("");
 
