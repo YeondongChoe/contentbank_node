@@ -67,7 +67,7 @@ async function generatePDF(data) {
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
-      min-height: 1000px;
+      min-height: 1100px;
       margin-bottom: 10px;
     }
     .header {
@@ -165,7 +165,7 @@ async function generatePDF(data) {
   };
 
   const generatePage = (leftArray, rightArray, currentPage) => {
-    let pageHtml = '<div class="page" style="min-height: 1200px;">';
+    let pageHtml = '<div class="page">';
 
     if (currentPage === 1) {
       pageHtml += `
