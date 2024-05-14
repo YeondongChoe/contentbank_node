@@ -55,22 +55,16 @@ async function generatePDF(data) {
     }
     .viewer {
       display: flex;
-      
     }
     .wrapper {
-     
     }
     .left, .right {
-      display: flex;
-     
     }
     .contentWrapper {
     }
     .number {
- 
     }
     .content {
-      
     }
     .center {
       display: flex;
