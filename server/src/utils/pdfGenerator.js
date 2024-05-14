@@ -171,8 +171,8 @@ async function generatePDF(data) {
       )
       .join("");
 
-    pageHtml += `${leftHtml}`;
-    pageHtml += `${rightHtml}`;
+    pageHtml += `<div class="wrapper">${leftHtml}</div>`;
+    pageHtml += `<div class="wrapper">${rightHtml}</div>`;
 
     pageHtml += `
       </div>
