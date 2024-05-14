@@ -35,7 +35,6 @@ async function generatePDF(data) {
       border: 1px solid #a3aed0;
       border-radius: 10px;
       min-height: 1000px;
-      margin-bottom: 10px;
     }
     .header {
       display: flex;
@@ -76,10 +75,7 @@ async function generatePDF(data) {
     }
   `;
 
-  // flex: 1;
-  // box-sizing: border-box;
-  // display: flex;
-  // flex-direction: column;
+  // margin-bottom: 10px;
 
   const generatePagesHtml = (questions) => {
     const pages = []; // 각 페이지의 HTML을 저장할 배열
