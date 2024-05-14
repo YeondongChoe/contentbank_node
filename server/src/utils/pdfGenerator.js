@@ -122,12 +122,12 @@ async function generatePDF(data) {
       console.log("allArray:", allArray);
       console.log("remainingItems:", remainingItems);
 
+      // 페이지 생성
+      pages.push(generatePage(leftArray, rightArray, currentPage));
+      currentPage++;
+
       if (allArray.length === 0) break;
     }
-
-    // 페이지 생성
-    pages.push(generatePage(leftArray, rightArray, currentPage));
-    currentPage++;
 
     return pages;
   };
