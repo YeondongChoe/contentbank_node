@@ -110,6 +110,7 @@ async function generatePDF(data) {
       // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
       const remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       if (remainingItems.length === 0) break;
+      console.log("remainingItems:", remainingItems);
 
       // allArray 덮어쓰기
       //totalHeight = 0;
