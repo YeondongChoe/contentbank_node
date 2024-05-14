@@ -16,9 +16,11 @@ async function generatePDF(data) {
     { id: 9, content: data.content },
     { id: 10, content: data.content },
     { id: 11, content: data.content },
-    // { id: 12, content: data.content },
-    // { id: 13, content: data.content },
-    // { id: 14, content: data.content },
+    { id: 12, content: data.content },
+    { id: 13, content: data.content },
+    { id: 14, content: data.content },
+    { id: 15, content: data.content },
+    { id: 16, content: data.content },
   ];
 
   const cssStyles = `
