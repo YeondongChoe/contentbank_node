@@ -115,12 +115,6 @@ async function generatePDF(data) {
     body {
       font-family: Consolas, monaco;
     }
-    .firstPage {
-      border: 1px solid #a3aed0;
-      border-radius: 10px;
-      min-height: 100%;
-      margin-bottom: 10px;
-    }
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
@@ -223,11 +217,10 @@ async function generatePDF(data) {
   };
 
   const generatePage = (leftArray, rightArray, currentPage) => {
-    let pageHtml = "";
+    let pageHtml = '<div class="page">';
 
     if (currentPage === 1) {
       pageHtml += `
-      <div class="firstPage">
         <div class="header">
           <div class="headerLeft">
             <div class="leftTop">
@@ -248,7 +241,7 @@ async function generatePDF(data) {
         </div>`;
     }
 
-    pageHtml += `<div class="page"><div class="viewer">`;
+    pageHtml += `<div class="viewer">`;
 
     // 좌측 배열의 HTML 생성
     const leftHtml = leftArray
