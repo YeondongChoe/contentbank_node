@@ -153,6 +153,7 @@ async function generatePDF(data) {
     }
     .content {
       display: flex;
+      flex: 1;
     }
     .contentWrapper {
     }
