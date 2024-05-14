@@ -59,15 +59,15 @@ async function generatePDF(data) {
     .wrapper {
       display: flex;
       flex: 1;
-      flex-direction: row;
+      flex-direction: column;
       padding: 10px;
     }
     .left, .right {
       display: flex;
+      flex-direction: row;
     }
-    .number {
-    }
-    .content {
+    .number, .content {
+      display: inline;
     }
     .center {
       display: flex;
