@@ -87,6 +87,7 @@ async function generatePDF(data) {
     let totalHeight = 0; // 현재까지의 높이
     const questionHeight = 200;
     let allArray = []; // 모든 배열
+    let remainingItems = [];
 
     questions.forEach((question) => {
       const questionWithHeight = { question, totalHeight };
@@ -106,9 +107,14 @@ async function generatePDF(data) {
         (item) => item.totalHeight > 800 && item.totalHeight <= 1600
       );
       console.log("rightArray:", rightArray);
-      const remainingItems = allArray.filter((item) => item.totalHeight > 1600);
+      remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       console.log("remainingItems:", remainingItems);
-      allArray = remainingItems;
+      remainingItems.forEach((question) => {
+        const questionWithHeight = { question, totalHeight };
+        totalHeight += questionHeight;
+        allArray.push(questionWithHeight);
+      });
+      remainingItems = [];
       console.log("allArray:", allArray);
       if (allArray.length === 0) {
         console.log("allArray.length:", allArray.length);
@@ -116,12 +122,6 @@ async function generatePDF(data) {
       }
 
       // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
-
-      // remainingItems.forEach((question) => {
-      //   const questionWithHeight = { question, totalHeight };
-      //   totalHeight += questionHeight;
-      //   allArray.push(questionWithHeight);
-      // });
 
       // if (remainingItems.length === 0) break;
       // else {
