@@ -110,7 +110,7 @@ async function generatePDF(data) {
   const cssStyles = `
     @page {
       size: A4;
-      margin: 10px;
+      margin: 20px 10px 10px 10px;
     }
     body {
       font-family: Consolas, monaco;
