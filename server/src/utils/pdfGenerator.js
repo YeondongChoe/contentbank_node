@@ -34,6 +34,16 @@ async function generatePDF(data) {
     { id: 27, content: data.content },
     { id: 28, content: data.content },
     { id: 29, content: data.content },
+    { id: 30, content: data.content },
+    { id: 31, content: data.content },
+    { id: 32, content: data.content },
+    { id: 33, content: data.content },
+    { id: 34, content: data.content },
+    { id: 35, content: data.content },
+    { id: 36, content: data.content },
+    { id: 37, content: data.content },
+    { id: 38, content: data.content },
+    { id: 39, content: data.content },
   ];
 
   const cssStyles = `
@@ -48,6 +58,7 @@ async function generatePDF(data) {
       border: 1px solid #a3aed0;
       border-radius: 10px;
       min-height: 1000px;
+      margin-bottom: 10px;
     }
     .header {
       display: flex;
