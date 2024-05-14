@@ -150,14 +150,11 @@ async function generatePDF(data) {
     }
     .wrapper {
       padding: 20px;
+      flex: 1;
+      max-width: 50%;
     }
     .content {
       display: flex;
-      flex: 1;
-    }
-    .contentWrapper {
-    }
-    .number {
     }
     .center {
       display: flex;
