@@ -110,10 +110,13 @@ async function generatePDF(data) {
       remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       console.log("remainingItems:", remainingItems);
       allArray = [];
-      allArray = remainingItems.map((question, index) => {
-        const id = index + 1; // id를 1부터 시작하도록 설정
-        const totalHeight = index * questionHeight; // totalHeight를 200씩 증가시키며 설정
-        return { question, totalHeight };
+      allArray = remainingItems.map((item, index) => {
+        const newId = index + 1; // id를 1부터 시작하도록 설정
+        const newTotalHeight = index * questionHeight; // totalHeight를 200씩 증가시키며 설정
+        return {
+          question: { id: newId, content: item.question.content },
+          totalHeight: newTotalHeight,
+        };
       });
       remainingItems = [];
       console.log("allArray:", allArray);
