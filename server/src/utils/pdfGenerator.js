@@ -109,31 +109,17 @@ async function generatePDF(data) {
       console.log("rightArray:", rightArray);
       remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       console.log("remainingItems:", remainingItems);
-      remainingItems.forEach((question) => {
-        const questionWithHeight = { question, totalHeight };
-        totalHeight += questionHeight;
-        allArray.push(questionWithHeight);
+      allArray = [];
+      allArray = remainingItems.map((question, index) => {
+        const id = index + 1; // id를 1부터 시작하도록 설정
+        const totalHeight = index * questionHeight; // totalHeight를 200씩 증가시키며 설정
+        return { question, totalHeight };
       });
       remainingItems = [];
       console.log("allArray:", allArray);
-      if (allArray.length === 0) {
-        console.log("allArray.length:", allArray.length);
-        break;
-      }
+      console.log("remainingItems:", remainingItems);
 
-      // allArray에 남은 문항 중 totalHeight가 1600보다 큰 문항 덮어쓰기
-
-      // if (remainingItems.length === 0) break;
-      // else {
-      //   // allArray 덮어쓰기
-      //   allArray = remainingItems.map((item) => {
-      //     const questionWithHeight = { question: item.question, totalHeight };
-      //     totalHeight += questionHeight;
-      //     console.log("allArray:", allArray);
-      //     return questionWithHeight;
-      //   });
-      // }
-      //totalHeight = 0;
+      if (allArray.length === 0) break;
     }
 
     // 페이지 생성
