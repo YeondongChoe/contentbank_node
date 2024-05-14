@@ -166,7 +166,7 @@ async function generatePDF(data) {
     const leftHtml = leftArray
       .map(
         (item) =>
-          `<div class="left"><div class="contentWrapper"><div class="number">${item.question.id}</div><div class="content">${item.question.content}</div></div></div>`
+          `<div class="left"><div style="display: flex;><div>${item.question.id}</div><div>${item.question.content}</div></div></div>`
       )
       .join("");
 
