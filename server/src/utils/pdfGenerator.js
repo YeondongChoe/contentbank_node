@@ -124,7 +124,7 @@ async function generatePDF(data) {
     .page {
       border: 1px solid #a3aed0;
       border-radius: 10px;
-      min-height: 1100px;
+      min-height: 1050px;
       margin-bottom: 10px;
     }
     .header {
