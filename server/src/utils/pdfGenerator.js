@@ -63,7 +63,9 @@ async function generatePDF(data) {
     }
     .left, .right {
       display: flex;
+      flex-direction: column;
       flex: 1;
+      padding: 10px;
     }
     .center {
       display: flex;
