@@ -8,7 +8,7 @@ async function generatePDF(data) {
     const questionContent =
       item.quizItemList.find((quiz) => quiz.type === "QUESTION")?.content ||
       "No question content";
-    return { id: item.num, content: questionContent };
+    return { num: item.num, content: questionContent };
   });
   console.log(questions);
 
@@ -107,7 +107,11 @@ async function generatePDF(data) {
         const newId = index + 1; // id를 1부터 시작하도록 설정
         const newTotalHeight = index * questionHeight; // totalHeight를 200씩 증가시키며 설정
         return {
-          question: { id: newId, content: item.question.content },
+          question: {
+            id: newId,
+            num: item.question.num,
+            content: item.question.content,
+          },
           totalHeight: newTotalHeight,
         };
       });
@@ -160,12 +164,18 @@ async function generatePDF(data) {
 
     // 좌측 배열의 HTML 생성
     const leftHtml = leftArray
-      .map((item) => `<div class="content">${item.question.content}</div>`)
+      .map(
+        (item) =>
+          `<div class="content">${item.question.num}${item.question.content}</div>`
+      )
       .join("");
 
     // 우측 배열의 HTML 생성
     const rightHtml = rightArray
-      .map((item) => `<div class="content">${item.question.content}</div>`)
+      .map(
+        (item) =>
+          `<div class="content">${item.question.num}${item.question.content}</div>`
+      )
       .join("");
     //${item.question.id}
     pageHtml += `<div class="wrapper">${leftHtml}</div>`;
