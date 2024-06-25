@@ -3,6 +3,8 @@ const puppeteer = require("puppeteer");
 
 async function generatePDF(data) {
   const title = data.title;
+  const ti = data.title;
+
   // 가져온 문제 데이터 예시
   const questions = [
     { id: 1, content: data.content },
