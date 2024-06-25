@@ -4,7 +4,7 @@ const puppeteer = require("puppeteer");
 async function generatePDF(data) {
   console.log(data);
 
-  const questions = data.map((item) => {
+  const questions = data.content.map((item) => {
     const questionContent =
       item.quizItemList.find((quiz) => quiz.type === "QUESTION")?.content ||
       "No question content";
