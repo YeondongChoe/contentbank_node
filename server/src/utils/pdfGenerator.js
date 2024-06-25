@@ -4,11 +4,11 @@ const puppeteer = require("puppeteer");
 async function generatePDF(data) {
   console.log(data);
 
-  const questions = content.map((item, index) => {
+  const questions = data.map((item) => {
     const questionContent =
       item.quizItemList.find((quiz) => quiz.type === "QUESTION")?.content ||
       "No question content";
-    return { id: index + 1, content: questionContent };
+    return { id: item.num, content: questionContent };
   });
   console.log(questions);
   // 가져온 문제 데이터 예시
