@@ -92,10 +92,6 @@ app.post("/get-pdf", async (req, res) => {
       res.send("파일이 성공적으로 저장되었습니다.");
     }
   });
-
-  // PDF를 클라이언트로 전송
-  //res.contentType("application/pdf");
-  //res.send(pdfBuffer);
 });
 
 app.listen(port, () => {

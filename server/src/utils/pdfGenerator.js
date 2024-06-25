@@ -177,7 +177,6 @@ async function generatePDF(data) {
           `<div class="content">${item.question.num}${item.question.content}</div>`
       )
       .join("");
-    //${item.question.id}
     pageHtml += `<div class="wrapper">${leftHtml}</div>`;
     pageHtml += `<div class="wrapper">${rightHtml}</div>`;
 
