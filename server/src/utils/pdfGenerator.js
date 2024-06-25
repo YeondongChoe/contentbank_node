@@ -3,8 +3,6 @@ const puppeteer = require("puppeteer");
 
 async function generatePDF(data) {
   console.log(data);
-  const title = data.title;
-  const ti = data.title;
 
   const questions = content.map((item, index) => {
     const questionContent =
