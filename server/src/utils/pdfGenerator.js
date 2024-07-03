@@ -143,17 +143,17 @@ async function generatePDF(data) {
         <div class="header">
           <div class="headerLeft">
             <div class="leftTop">
-              <div style="font-size: 20px;"><span style="color: blue;">기본 </span>중 1-1</div>
-              <div style="font-size: 14px; color: gray; padding-top: 5px">소인수분해</div>
+              <div style="font-size: 20px;"><span style="color: blue;"> </span></div>
+              <div style="font-size: 14px; color: gray; padding-top: 5px"></div>
             </div>
             <div class="leftBottom">
-              <div style="font-size: 14px;">50문항 | 콘텐츠뱅크</div>
+              <div style="font-size: 14px;">${questions.length}문항</div>
             </div>
           </div>
           <div class="headerRight">
-            <div>이미지</div>
+            <div></div>
             <div class="inputWrapper">
-              <div style="font-size: 14px;">2024.02.27 이름</div>
+              <div style="font-size: 14px;">이름</div>
               <input style="border: none; border-bottom: 1px solid gray; margin-left: 5px; font-size: 8px;"></input>
             </div>
           </div>
