@@ -2,15 +2,15 @@ const ejs = require("ejs");
 const puppeteer = require("puppeteer");
 
 async function generatePDF(data) {
-  console.log(data);
+  //console.log(data);
 
   const questions = data.content.map((item) => {
     const questionContent =
       item.quizItemList.find((quiz) => quiz.type === "QUESTION")?.content ||
       "No question content";
-    return { num: item.num, content: questionContent };
+    return { num: item.num, content: questionContent, height: item.height };
   });
-  //console.log(questions);
+  console.log(questions);
 
   const cssStyles = `
     @page {
@@ -78,13 +78,13 @@ async function generatePDF(data) {
     let leftArray = []; // 좌측 배열
     let rightArray = []; // 우측 배열
     let totalHeight = 0; // 현재까지의 높이
-    const questionHeight = 200;
+    //const questionHeight = questions.height;
     let allArray = []; // 모든 배열
     let remainingItems = [];
 
     questions.forEach((question) => {
       const questionWithHeight = { question, totalHeight };
-      totalHeight += questionHeight;
+      totalHeight += question.height;
       allArray.push(questionWithHeight);
     });
     //console.log("allArray:", allArray);
@@ -105,7 +105,7 @@ async function generatePDF(data) {
       allArray = [];
       allArray = remainingItems.map((item, index) => {
         const newId = index + 1; // id를 1부터 시작하도록 설정
-        const newTotalHeight = index * questionHeight; // totalHeight를 200씩 증가시키며 설정
+        const newTotalHeight = index * item.height; // totalHeight를 200씩 증가시키며 설정
         return {
           question: {
             id: newId,
