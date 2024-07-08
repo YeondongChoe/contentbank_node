@@ -10,7 +10,7 @@ async function generatePDF(data) {
       "No question content";
     return { num: item.num, content: questionContent, height: item.height };
   });
-  console.log(questions);
+  //console.log(questions);
 
   const cssStyles = `
     @page {
@@ -55,8 +55,7 @@ async function generatePDF(data) {
     }
     .wrapper {
       padding: 20px;
-      flex: 1;
-      max-width: 50%;
+      width: 48%;
     }
     .content {
       display: flex;
@@ -87,21 +86,21 @@ async function generatePDF(data) {
       totalHeight += question.height;
       allArray.push(questionWithHeight);
     });
-    //console.log("allArray:", allArray);
+    console.log("allArray:", allArray);
 
     // allArray 생성 및 조건에 따른 배열 분배
     while (true) {
       // leftArray에 높이가 800까지인 문항 넣기
       leftArray = allArray.filter((item) => item.totalHeight <= 800);
-      //console.log("leftArray:", leftArray);
+      console.log("leftArray:", leftArray);
 
       // rightArray에 높이가 800초과 1600까지인 문항 넣기
       rightArray = allArray.filter(
         (item) => item.totalHeight > 800 && item.totalHeight <= 1600
       );
-      //console.log("rightArray:", rightArray);
+      console.log("rightArray:", rightArray);
       remainingItems = allArray.filter((item) => item.totalHeight > 1600);
-      //console.log("remainingItems:", remainingItems);
+      console.log("remainingItems:", remainingItems);
       allArray = [];
       allArray = remainingItems.map((item, index) => {
         const newId = index + 1; // id를 1부터 시작하도록 설정
@@ -116,8 +115,8 @@ async function generatePDF(data) {
         };
       });
       remainingItems = [];
-      //console.log("allArray:", allArray);
-      //console.log("remainingItems:", remainingItems);
+      console.log("allArray:", allArray);
+      console.log("remainingItems:", remainingItems);
 
       // 페이지 생성
       pages.push(generatePage(leftArray, rightArray, currentPage));
