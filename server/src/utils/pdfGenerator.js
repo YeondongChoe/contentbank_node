@@ -105,7 +105,7 @@ async function generatePDF(data) {
       allArray = [];
       totalHeight = 0;
       allArray = remainingItems.map((item) => {
-        totalHeight += item.questions.height;
+        totalHeight += item.question.height;
         return {
           question: item.question,
           totalHeight,
