@@ -101,11 +101,13 @@ async function generatePDF(data) {
       console.log("rightArray:", rightArray);
       remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       console.log("remainingItems:", remainingItems);
+
       allArray = [];
       totalHeight = 0;
-      remainingItems.forEach((question) => {
+      remainingItems.map((question) => {
         totalHeight += question.height;
-        const questionWithHeight = { question, totalHeight };
+        const content = question.question;
+        const questionWithHeight = [{ content, totalHeight }];
         allArray.push(questionWithHeight);
       });
       remainingItems = [];
