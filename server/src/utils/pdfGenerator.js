@@ -71,111 +71,55 @@ async function generatePDF(data) {
 
   // margin-bottom: 10px;
 
-  // const generatePagesHtml = (questions) => {
-  //   const pages = []; // 각 페이지의 HTML을 저장할 배열
-  //   let currentPage = 1; // 현재 페이지 번호
-  //   let leftArray = []; // 좌측 배열
-  //   let rightArray = []; // 우측 배열
-  //   let totalHeight = 0; // 현재까지의 높이
-  //   //const questionHeight = questions.height;
-  //   let allArray = []; // 모든 배열
-  //   let remainingItems = [];
-
-  //   questions.forEach((question) => {
-  //     const questionWithHeight = { question, totalHeight };
-  //     totalHeight += question.height;
-  //     allArray.push(questionWithHeight);
-  //   });
-  //   console.log("allArray:", allArray);
-
-  //   // allArray 생성 및 조건에 따른 배열 분배
-  //   while (true) {
-  //     // leftArray에 높이가 800까지인 문항 넣기
-  //     leftArray = allArray.filter((item) => item.totalHeight <= 800);
-  //     console.log("leftArray:", leftArray);
-
-  //     // rightArray에 높이가 800초과 1600까지인 문항 넣기
-  //     rightArray = allArray.filter(
-  //       (item) => item.totalHeight > 800 && item.totalHeight <= 1600
-  //     );
-  //     console.log("rightArray:", rightArray);
-  //     remainingItems = allArray.filter((item) => item.totalHeight > 1600);
-  //     console.log("remainingItems:", remainingItems);
-
-  //     allArray = [];
-  //     totalHeight = 0;
-  //     allArray = remainingItems.map((item) => {
-  //       totalHeight += item.question.height;
-  //       return {
-  //         question: item.question,
-  //         totalHeight,
-  //       };
-  //     });
-  //     remainingItems = [];
-  //     console.log("allArray:", allArray);
-  //     console.log("remainingItems:", remainingItems);
-
-  //     // 페이지 생성
-  //     pages.push(generatePage(leftArray, rightArray, currentPage));
-  //     currentPage++;
-
-  //     if (allArray.length === 0) break;
-  //   }
-
-  //   return pages;
-  // };
-
   const generatePagesHtml = (questions) => {
     const pages = []; // 각 페이지의 HTML을 저장할 배열
     let currentPage = 1; // 현재 페이지 번호
     let leftArray = []; // 좌측 배열
     let rightArray = []; // 우측 배열
     let totalHeight = 0; // 현재까지의 높이
+    //const questionHeight = questions.height;
     let allArray = []; // 모든 배열
+    let remainingItems = [];
 
-    // 질문들을 높이에 따라 allArray에 추가
     questions.forEach((question) => {
+      const questionWithHeight = { question, totalHeight };
       totalHeight += question.height;
-      const questionWithHeight = { ...question, totalHeight }; // question 객체에 totalHeight 추가
       allArray.push(questionWithHeight);
     });
     console.log("allArray:", allArray);
 
     // allArray 생성 및 조건에 따른 배열 분배
-    while (allArray.length > 0) {
-      leftArray = [];
-      rightArray = [];
-      totalHeight = 0; // totalHeight 초기화
-
+    while (true) {
       // leftArray에 높이가 800까지인 문항 넣기
-      allArray = allArray.filter((item) => {
-        if (totalHeight + item.height <= 800) {
-          leftArray.push(item);
-          totalHeight += item.height;
-          return false; // 해당 item을 allArray에서 제거
-        }
-        return true; // 해당 item을 allArray에 남겨두기
-      });
-
+      leftArray = allArray.filter((item) => item.totalHeight <= 800);
       console.log("leftArray:", leftArray);
 
-      totalHeight = 0; // totalHeight 초기화
-
       // rightArray에 높이가 800초과 1600까지인 문항 넣기
-      allArray = allArray.filter((item) => {
-        if (totalHeight + item.height <= 800) {
-          rightArray.push(item);
-          totalHeight += item.height;
-          return false; // 해당 item을 allArray에서 제거
-        }
-        return true; // 해당 item을 allArray에 남겨두기
-      });
-
+      rightArray = allArray.filter(
+        (item) => item.totalHeight > 800 && item.totalHeight <= 1600
+      );
       console.log("rightArray:", rightArray);
+      remainingItems = allArray.filter((item) => item.totalHeight > 1600);
+      console.log("remainingItems:", remainingItems);
+
+      allArray = [];
+      totalHeight = 0;
+      allArray = remainingItems.map((item) => {
+        totalHeight += item.question.height;
+        return {
+          question: item.question,
+          totalHeight,
+        };
+      });
+      remainingItems = [];
+      console.log("allArray:", allArray);
+      console.log("remainingItems:", remainingItems);
 
       // 페이지 생성
       pages.push(generatePage(leftArray, rightArray, currentPage));
       currentPage++;
+
+      if (allArray.length === 0) break;
     }
 
     return pages;
