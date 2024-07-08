@@ -80,10 +80,9 @@ async function generatePDF(data) {
     //const questionHeight = questions.height;
     let allArray = []; // 모든 배열
     let remainingItems = [];
-    const height = questions.height;
 
     questions.forEach((question) => {
-      const questionWithHeight = { question, totalHeight, height };
+      const questionWithHeight = { question, totalHeight };
       totalHeight += question.height;
       allArray.push(questionWithHeight);
     });
@@ -103,17 +102,20 @@ async function generatePDF(data) {
       remainingItems = allArray.filter((item) => item.totalHeight > 1600);
       console.log("remainingItems:", remainingItems);
       allArray = [];
-      allArray = remainingItems.map((item, index) => {
-        const newId = index + 1; // id를 1부터 시작하도록 설정
-        const newTotalHeight = index * height;
-        return {
-          question: {
-            id: newId,
-            num: item.question.num,
-            content: item.question.content,
-          },
-          totalHeight: newTotalHeight,
-        };
+      totalHeight = 0;
+      remainingItems.forEach((question, index) => {
+        const questionWithHeight = { question, totalHeight };
+        totalHeight += question.height;
+        allArray.push(questionWithHeight);
+        // const newId = index + 1; // id를 1부터 시작하도록 설정
+        // return {
+        //   question: {
+        //     id: newId,
+        //     num: question.num,
+        //     content: question.content,
+        //   },
+        //   totalHeight: totalHeight,
+        // };
       });
       remainingItems = [];
       console.log("allArray:", allArray);
