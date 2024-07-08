@@ -80,9 +80,10 @@ async function generatePDF(data) {
     //const questionHeight = questions.height;
     let allArray = []; // 모든 배열
     let remainingItems = [];
+    const height = questions.height;
 
     questions.forEach((question) => {
-      const questionWithHeight = { question, totalHeight };
+      const questionWithHeight = { question, totalHeight, height };
       totalHeight += question.height;
       allArray.push(questionWithHeight);
     });
@@ -104,7 +105,7 @@ async function generatePDF(data) {
       allArray = [];
       allArray = remainingItems.map((item, index) => {
         const newId = index + 1; // id를 1부터 시작하도록 설정
-        const newTotalHeight = index * item.height; // totalHeight를 200씩 증가시키며 설정
+        const newTotalHeight = index * height;
         return {
           question: {
             id: newId,
