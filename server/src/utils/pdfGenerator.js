@@ -103,19 +103,10 @@ async function generatePDF(data) {
       console.log("remainingItems:", remainingItems);
       allArray = [];
       totalHeight = 0;
-      remainingItems.forEach((question, index) => {
+      remainingItems.forEach((question) => {
         const questionWithHeight = { question, totalHeight };
         totalHeight += question.height;
-        allArray.push(questionWithHeight);
-        // const newId = index + 1; // id를 1부터 시작하도록 설정
-        // return {
-        //   question: {
-        //     id: newId,
-        //     num: question.num,
-        //     content: question.content,
-        //   },
-        //   totalHeight: totalHeight,
-        // };
+        allArray.push(question);
       });
       remainingItems = [];
       console.log("allArray:", allArray);
