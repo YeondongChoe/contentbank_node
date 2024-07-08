@@ -104,10 +104,10 @@ async function generatePDF(data) {
 
       allArray = [];
       totalHeight = 0;
-      remainingItems.map((question) => {
+      remainingItems.forEach((question) => {
         totalHeight += question.height;
         const content = question.question;
-        const questionWithHeight = [{ content, totalHeight }];
+        const questionWithHeight = { content, totalHeight };
         allArray.push(questionWithHeight);
       });
       remainingItems = [];
