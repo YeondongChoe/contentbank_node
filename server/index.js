@@ -57,7 +57,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  res.send("Hello worldd");
 });
 
 app.set("view engine", "ejs");
@@ -96,6 +96,146 @@ app.post("/get-pdf", async (req, res) => {
       res.send("파일이 성공적으로 저장되었습니다.");
     }
   });
+});
+
+// itex 추가 내용 =======================================================
+const tempDir = path.join(__dirname, "routes", "temp");
+
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir);
+}
+// 허용 url
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3006",
+  "http://43.201.205.140:40031",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
+// multer 파일 설정
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// 로컬 저장 방식
+const dream_img_save_dir = path.join(__dirname, "images");
+const saveImageLocally = (savePath, fileBuffer) => {
+  fs.mkdirSync(path.dirname(savePath), { recursive: true });
+  fs.writeFileSync(savePath, fileBuffer);
+};
+
+const { ftpConfig } = require("./configs/ftp_img_save.js");
+// FTP 저장 방식
+const saveImageToFTP = (ftpConfig, savePath, fileBuffer) => {
+  const client = new FTPClient();
+  client.on("ready", () => {
+    client.put(fileBuffer, savePath, (err) => {
+      if (err) console.error("Error uploading file via FTP:", err);
+      else console.log("File uploaded via FTP.");
+      client.end();
+    });
+  });
+  client.connect(ftpConfig);
+};
+
+const { s3Config, bucketName } = require("./configs/s3_img_save");
+// AWS S3 저장 방식
+const saveImageToS3 = (s3Config, bucketName, key, fileBuffer) => {
+  const s3 = new AWS.S3(s3Config);
+  const params = {
+    Bucket: bucketName,
+    Key: key,
+    Body: fileBuffer,
+    ACL: "public-read",
+  };
+  s3.upload(params, (err, data) => {
+    if (err) console.error("Error uploading file to S3:", err);
+    else console.log("File uploaded to S3:", data.Location);
+  });
+};
+
+// 단문항 편집에서 문항 저장 시, 해당 문항
+app.post("/uploadImage", upload.single("file"), async (req, res) => {
+  try {
+    const img_save_type = req.body.img_save_type;
+    console.log("img_save_type:", img_save_type);
+
+    if (!img_save_type) {
+      throw new Error("img_save_type is missing");
+    }
+
+    if (!req.file) {
+      throw new Error("File is missing");
+    }
+
+    const imgSaveTypeInt = parseInt(img_save_type, 10);
+    console.log("img_save_type (as integer):", imgSaveTypeInt);
+
+    const imgUUID = uuidv4();
+    const today = new Date();
+    const year = today.getFullYear().toString();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
+
+    switch (imgSaveTypeInt) {
+      case 1:
+        savePath = path.join(
+          dream_img_save_dir,
+          year,
+          month,
+          day,
+          imgUUID + path.extname(req.file.originalname)
+        );
+        console.log("savePath (Local):", savePath);
+        saveImageLocally(savePath, req.file.buffer);
+        break;
+
+      case 2:
+        savePath = path.join(
+          dream_img_save_dir,
+          year,
+          month,
+          day,
+          imgUUID + path.extname(req.file.originalname)
+        );
+        console.log("savePath (FTP):", savePath);
+        saveImageToFTP(ftpConfig, savePath, req.file.buffer);
+        break;
+
+      case 3:
+        key = `${year}/${month}/${day}/${imgUUID}${path.extname(
+          req.file.originalname
+        )}`;
+        console.log("key (S3):", key);
+        saveImageToS3(s3Config, bucketName, key, req.file.buffer);
+        break;
+
+      default:
+        throw new Error("Invalid save type");
+    }
+
+    res.json({ imgUUID });
+  } catch (error) {
+    console.error("Error processing upload:", error);
+    res.status(500).send("Error processing upload");
+  }
+});
+
+const qnapiHmlupRouter = require("./routes/qnapi_dream");
+app.use((req, res, next) => {
+  app.use("/qnapi_dream", qnapiHmlupRouter);
+  next();
 });
 
 app.listen(port, () => {
