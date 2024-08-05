@@ -1,19 +1,34 @@
-const fs = require("fs");
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const generatePDF = require("./src/utils/pdfGenerator.js");
-const Eureka = require("eureka-js-client").Eureka; // Eureka 클라이언트 추가
+import express from "express";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import path from "path";
+import fs from "fs/promises";
+import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
+import { Eureka } from "eureka-js-client";
+
+import { ftpConfig, isFtpConfigured } from "./config/ftp.js";
+import { bucketName, isS3Configured, s3Config } from "./config/s3.js";
+import { generatePDF } from "./src/utils/pdfGenerator.js";
+import {
+  saveImageLocally,
+  saveImageToFTP,
+  saveImageToS3,
+} from "./src/utils/imageUpload.js";
+// import qnapiDreamRouter from './routes/qnapi_dream.js';  // iTex
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 5050;
 
-// Eureka 클라이언트 설정
-const client = new Eureka({
+// Eureka client setup
+const eurekaClient = new Eureka({
   instance: {
-    app: "file-service", // 서비스 이름
-    hostName: "file-service", // 서비스 호스트명
-    ipAddr: "127.0.0.1", // 서비스 IP 주소
+    app: "file-service",
+    hostName: "file-service",
+    ipAddr: "127.0.0.1",
     port: {
       $: port,
       "@enabled": "true",
@@ -25,79 +40,149 @@ const client = new Eureka({
     },
   },
   eureka: {
-    host: "210.124.177.35", // Eureka 서버 호스트
-    port: 8761, // Eureka 서버 포트
+    host: "210.124.177.35",
+    // host: 'localhost',
+    port: 8761,
     servicePath: "/eureka/apps/",
   },
 });
 
-// Eureka 클라이언트 시작
-client.start((error) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("Eureka client started");
-  }
-});
-
-// 모든 요청에 대해 CORS 미들웨어 적용
-// app.use(
-//   cors({
-//     origin: true, // 실제 요청이 온 origin을 허용
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-//     credentials: true, // 자격 증명 허용
-//   })
-// );
-
-//app.use(bodyParser.json());
-
-// 요청 본문 크기 제한을 50MB로 설정
+// Middleware
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
-
-app.get("/", (req, res) => {
-  res.send("Hello worldd");
-});
-
 app.set("view engine", "ejs");
 
+// Routes
+app.get("/", (req, res) => res.send("Hello world"));
+
 app.post("/get-pdf", async (req, res) => {
-  const { title, content, column, uploadDir, fileName } = req.body;
-  // 데이터 및 CSS 스타일
-  const data = {
-    title: title,
-    content: content,
-    column: column,
-    uploadDir: uploadDir,
-    fileName: fileName,
-  };
-  // 파일 저장할 디렉토리 경로
-  //const uploadDir = "/usr/share/nginx/html/CB";
+  try {
+    const { title, content, column, uploadDir, fileName } = req.body;
+    const data = { title, content, column, uploadDir, fileName };
 
-  // 디렉토리가 존재하지 않으면 생성
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+    await fs.mkdir(uploadDir, { recursive: true });
+
+    const pdfBuffer = await generatePDF(data);
+    const filePath = path.join(uploadDir, fileName);
+
+    await fs.writeFile(filePath, pdfBuffer);
+    res.send("File saved successfully");
+  } catch (error) {
+    console.error("Error saving file:", error);
+    res.status(500).send("Error saving file");
   }
+});
 
-  // PDF 생성 모듈 호출
-  const pdfBuffer = await generatePDF(data);
+// File upload setup
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-  // 파일 저장 경로
-  const filePath = `${uploadDir}/${fileName}`;
-
-  // 파일 저장
-  fs.writeFile(filePath, pdfBuffer, (err) => {
-    if (err) {
-      console.error("파일 저장 중 오류 발생:", err);
-      res.status(500).send("파일 저장 중 오류가 발생했습니다.");
-    } else {
-      console.log("파일이 성공적으로 저장되었습니다:", filePath);
-      res.send("파일이 성공적으로 저장되었습니다.");
+app.post("/uploadImage", upload.single("file"), async (req, res) => {
+  try {
+    const { img_save_type } = req.body;
+    if (!img_save_type || !req.file) {
+      throw new Error("Missing required data");
     }
-  });
+
+    const imgSaveTypeInt = parseInt(img_save_type, 10);
+    const imgUUID = uuidv4();
+    const [year, month, day] = new Date()
+      .toISOString()
+      .split("T")[0]
+      .split("-");
+    const fileExtension = path.extname(req.file.originalname);
+
+    const savePath = path.join(year, month, day, `${imgUUID}${fileExtension}`);
+
+    switch (imgSaveTypeInt) {
+      case 1:
+        await saveImageLocally(
+          path.join(__dirname, "images", savePath),
+          req.file.buffer
+        );
+        console.log("Image saved locally");
+        break;
+      case 2:
+        if (isFtpConfigured) {
+          await saveImageToFTP(ftpConfig, savePath, req.file.buffer);
+          console.log("Image saved to FTP");
+        } else {
+          console.warn("FTP is not configured. Falling back to local storage.");
+          await saveImageLocally(
+            path.join(__dirname, "images", savePath),
+            req.file.buffer
+          );
+          console.log("Image saved locally (FTP fallback)");
+        }
+        break;
+      case 3:
+        if (isS3Configured) {
+          await saveImageToS3(s3Config, bucketName, savePath, req.file.buffer);
+          console.log("Image saved to S3");
+        } else {
+          console.warn("S3 is not configured. Falling back to local storage.");
+          await saveImageLocally(
+            path.join(__dirname, "images", savePath),
+            req.file.buffer
+          );
+          console.log("Image saved locally (S3 fallback)");
+        }
+        break;
+      default:
+        throw new Error("Invalid save type");
+    }
+
+    res.json({
+      imgUUID,
+      message: "Image uploaded successfully",
+      actualStorage: getActualStorageType(imgSaveTypeInt),
+    });
+  } catch (error) {
+    console.error("Error processing upload:", error);
+    res.status(500).json({
+      error: "Error processing upload",
+      details: error.message,
+    });
+  }
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+function getActualStorageType(imgSaveTypeInt) {
+  switch (imgSaveTypeInt) {
+    case 1:
+      return "local";
+    case 2:
+      return isFtpConfigured ? "ftp" : "local (FTP fallback)";
+    case 3:
+      return isS3Configured ? "s3" : "local (S3 fallback)";
+    default:
+      return "unknown";
+  }
+}
+
+// app.use('/qnapi_dream', qnapiDreamRouter);
+
+// Start server
+const startServer = async () => {
+  try {
+    await new Promise((resolve, reject) => {
+      eurekaClient.start((err) => (err ? reject(err) : resolve()));
+    });
+    console.log("Eureka client started");
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
