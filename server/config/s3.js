@@ -5,10 +5,10 @@ dotenv.config();
 export const s3Config = {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION || "ap-northeast-2",
+    region: process.env.AWS_REGION,
 };
 
-export const bucketName = process.env.S3_BUCKET_NAME || "itex-dev-image";
+export const bucketName = process.env.S3_BUCKET_NAME;
 
 // S3 설정 사용 가능 여부를 나타내는 플래그
 export let isS3Configured = true;

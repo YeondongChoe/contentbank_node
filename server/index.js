@@ -8,14 +8,14 @@ import { v4 as uuidv4 } from "uuid";
 import { Eureka } from "eureka-js-client";
 
 import { ftpConfig, isFtpConfigured } from "./config/ftp.js";
-import { bucketName, isS3Configured, s3Config } from "./config/s3.js";
+import { s3Config, bucketName, isS3Configured } from "./config/s3.js";
 import { generatePDF } from "./src/utils/pdfGenerator.js";
 import {
   saveImageLocally,
   saveImageToFTP,
   saveImageToS3,
 } from "./src/utils/imageUpload.js";
-// import qnapiDreamRouter from './routes/qnapi_dream.js';  // iTex
+import qnapiDreamRouter from "./routes/qnapi_dream.js"; // iTex
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -166,7 +166,7 @@ function getActualStorageType(imgSaveTypeInt) {
   }
 }
 
-// app.use('/qnapi_dream', qnapiDreamRouter);
+app.use("/qnapi_dream", qnapiDreamRouter);
 
 // Start server
 const startServer = async () => {
