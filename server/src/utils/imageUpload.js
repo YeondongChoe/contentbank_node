@@ -5,8 +5,10 @@ import AWS from 'aws-sdk';
 
 /**
  * Save image file locally
+ *
  * @param {string} savePath - Path to save the file
  * @param {Buffer} fileBuffer - File buffer to save
+ * @returns {Promise<void>}
  */
 export const saveImageLocally = async (savePath, fileBuffer) => {
     try {
@@ -21,9 +23,11 @@ export const saveImageLocally = async (savePath, fileBuffer) => {
 
 /**
  * Save image file to FTP server
+ *
  * @param {Object} ftpConfig - FTP configuration
  * @param {string} savePath - Path to save the file on FTP server
  * @param {Buffer} fileBuffer - File buffer to save
+ * @returns {Promise<unknown>}
  */
 export const saveImageToFTP = (ftpConfig, savePath, fileBuffer) => {
     return new Promise((resolve, reject) => {
@@ -54,10 +58,12 @@ export const saveImageToFTP = (ftpConfig, savePath, fileBuffer) => {
 
 /**
  * Save image file to AWS S3
+ *
  * @param {Object} s3Config - AWS S3 configuration
  * @param {string} bucketName - S3 bucket name
  * @param {string} key - S3 object key
  * @param {Buffer} fileBuffer - File buffer to save
+ * @returns {Promise<unknown>}
  */
 export const saveImageToS3 = (s3Config, bucketName, key, fileBuffer) => {
     return new Promise((resolve, reject) => {
