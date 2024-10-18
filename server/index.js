@@ -8,10 +8,10 @@ import {v4 as uuidv4} from 'uuid';
 import {Eureka} from 'eureka-js-client';
 
 import {ftpConfig, isFtpConfigured} from './config/ftp.js';
-import {s3Config, bucketName, isS3Configured} from './config/s3.js';
+import {bucketName, isS3Configured, s3Config} from './config/s3.js';
 import {generatePDF} from './src/utils/pdfGenerator.js';
 import {saveImageLocally, saveImageToFTP, saveImageToS3} from './src/utils/imageUpload.js';
-import qnapiDreamRouter from './routes/qnapi_dream.js';  // iTex
+import qnapiDreamRouter from './routes/qnapi_dream.js'; // iTex
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,6 +78,7 @@ const upload = multer({storage});
 app.post('/uploadImage', upload.single('file'), async (req, res) => {
     try {
         const {img_save_type} = req.body;
+
         if (!img_save_type || !req.file) {
             throw new Error('Missing required data');
         }
