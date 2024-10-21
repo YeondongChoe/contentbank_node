@@ -77,10 +77,12 @@ const upload = multer({storage});
 
 app.post('/upload_img', upload.single('file'), async (req, res) => {
     try {
-        const {img_save_type} = req.body;
+
+        let {img_save_type} = req.body;
 
         if (!img_save_type || !req.file) {
-            throw new Error('Missing required data');
+            img_save_type = 1;
+            // throw new Error('Missing required data');
         }
 
         const imgSaveTypeInt = parseInt(img_save_type, 10);
