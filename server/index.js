@@ -75,7 +75,7 @@ app.post('/get-pdf', async (req, res) => {
 const storage = multer.memoryStorage();
 const upload = multer({storage});
 
-app.post('/uploadImage', upload.single('file'), async (req, res) => {
+app.post('/upload_img', upload.single('file'), async (req, res) => {
     try {
         const {img_save_type} = req.body;
 
