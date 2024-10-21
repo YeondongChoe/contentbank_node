@@ -91,29 +91,35 @@ app.post('/upload_img', upload.single('file'), async (req, res) => {
         const fileExtension = path.extname(req.file.originalname);
 
         const savePath = path.join(year, month, day, `${imgUUID}${fileExtension}`);
+        let imgURL;
 
         switch (imgSaveTypeInt) {
             case 1:
                 await saveImageLocally(path.join(__dirname, 'images', savePath), req.file.buffer);
+                imgURL = `/images/${savePath}`;  // 로컬 저장 시 URL
                 console.log('Image saved locally');
                 break;
             case 2:
                 if (isFtpConfigured) {
                     await saveImageToFTP(ftpConfig, savePath, req.file.buffer);
+                    imgURL = `ftp://${ftpConfig.host}/${savePath}`;  // FTP URL
                     console.log('Image saved to FTP');
                 } else {
                     console.warn('FTP is not configured. Falling back to local storage.');
                     await saveImageLocally(path.join(__dirname, 'images', savePath), req.file.buffer);
+                    imgURL = `/images/${savePath}`;  // 로컬 저장 시 URL (FTP 폴백)
                     console.log('Image saved locally (FTP fallback)');
                 }
                 break;
             case 3:
                 if (isS3Configured) {
                     await saveImageToS3(s3Config, bucketName, savePath, req.file.buffer);
+                    imgURL = s3Url;  // S3 URL
                     console.log('Image saved to S3');
                 } else {
                     console.warn('S3 is not configured. Falling back to local storage.');
                     await saveImageLocally(path.join(__dirname, 'images', savePath), req.file.buffer);
+                    imgURL = `/images/${savePath}`;  // 로컬 저장 시 URL (S3 폴백)
                     console.log('Image saved locally (S3 fallback)');
                 }
                 break;
@@ -123,6 +129,7 @@ app.post('/upload_img', upload.single('file'), async (req, res) => {
 
         res.json({
             imgUUID,
+            imgURL,
             message: 'Image uploaded successfully',
             actualStorage: getActualStorageType(imgSaveTypeInt)
         });
