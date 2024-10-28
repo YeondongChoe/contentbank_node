@@ -61,6 +61,7 @@ app.set("view engine", "ejs");
 
 // images 디렉토리를 외부에서 접근 가능하도록 설정
 app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/hml_images", express.static(path.join(__dirname, "hml_images")));
 
 // Routes
 app.get("/", (req, res) => res.send("Hello world"));
