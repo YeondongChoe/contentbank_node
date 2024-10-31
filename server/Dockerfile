@@ -26,8 +26,6 @@ RUN rm -rf /tmp/*
 RUN rm -rf node_modules package-lock.json
 RUN npm install --force
 
-# RUN chmod 655 ./routes/perl/hml_xmlparse_oly_pj2.par
-
 COPY . .
 
 EXPOSE 5050
