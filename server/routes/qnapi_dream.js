@@ -32,7 +32,7 @@ import _0x239cb3 from "path";
 import _0x5e0cec from "fs";
 import _0x1db3d1 from "form-data";
 import _0xdf97 from "request";
-import _0x3219d9 from "../config/s3.js";
+import { _0x3219d9 } from "../config/s3.js";
 import {
   saveImageToFTP,
   saveImageToS3,
