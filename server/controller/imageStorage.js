@@ -1,9 +1,9 @@
-const fs = require("fs");
-const path = require("path");
-const FTPClient = require("ftp");
-const AWS = require("aws-sdk");
-const { ftpConfig, isFtpConfigured } = require("../config/ftp_img_save.js");
-const { s3Config, bucketName } = require("../config/s3_img_save.js");
+import fs from "fs";
+import path from "path";
+import FTPClient from "ftp";
+import AWS from "aws-sdk";
+import { ftpConfig, isFtpConfigured } from "../config/ftp_img_save.js";
+import { s3Config, bucketName } from "../config/s3_img_save.js";
 
 const saveImageLocally = (savePath, fileBuffer) => {
   fs.mkdirSync(path.dirname(savePath), { recursive: true });
@@ -36,10 +36,7 @@ const saveImageToS3 = (key, fileBuffer) => {
   });
 };
 
-module.exports = {
-  saveImageLocally,
-  saveImageToFTP,
-  saveImageToS3,
-  FTP_URL: ftpConfig.host,
-  S3_URL: `https://${bucketName}.s3.${s3Config.region}.amazonaws.com/`,
-};
+const FTP_URL = ftpConfig.host;
+const S3_URL = `https://${bucketName}.s3.${s3Config.region}.amazonaws.com/`;
+
+export { saveImageLocally, saveImageToFTP, saveImageToS3, FTP_URL, S3_URL };
