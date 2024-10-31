@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import FTPClient from "ftp";
 import AWS from "aws-sdk";
-import { ftpConfig, isFtpConfigured } from "../config/ftp_img_save.js";
-import { s3Config, bucketName } from "../config/s3_img_save.js";
+import { ftpConfig, isFtpConfigured } from "../config/ftp.js";
+import { s3Config, bucketName } from "../config/s3.js";
 
 const saveImageLocally = (savePath, fileBuffer) => {
   fs.mkdirSync(path.dirname(savePath), { recursive: true });
