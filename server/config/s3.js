@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const s3Config = {
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID || null,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || null,
+  region: process.env.AWS_REGION || null,
 };
 
 const bucketName = process.env.S3_BUCKET_NAME;
