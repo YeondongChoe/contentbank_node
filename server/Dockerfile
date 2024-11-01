@@ -1,10 +1,10 @@
 # Ubuntu 18.04를 기본 이미지로 사용
 FROM ubuntu:18.04
 
-# Node.js 18 저장소 추가
+# Node.js 16 저장소 추가 (18 대신 16 사용)
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 
 # 필요한 패키지들 설치
 RUN apt-get update && \
