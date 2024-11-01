@@ -1,21 +1,19 @@
 # Ubuntu 18.04를 기본 이미지로 사용
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
-# Node.js 16 저장소 추가 (18 대신 16 사용)
+# Node.js 22 저장소 추가 (18 대신 16 사용)
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 
 # 필요한 패키지들 설치
 RUN apt-get update && \
     apt-get install -y \
-        nodejs \
-        perl \
         build-essential \
+        curl \
         libmagickcore-dev \
         libmagickwand-dev \
         imagemagick \
-        perlmagick \
         libnss3 \
         libdbus-1-3 \
         libatk1.0-0 \
@@ -29,8 +27,21 @@ RUN apt-get update && \
         libgbm1 \
         libxkbcommon0 \
         libasound2 \
-        fonts-nanum && \
+        fonts-nanum \
+        wget \
+        bzip2 && \
     rm -rf /var/lib/apt/lists/*
+
+	# Perl 5.26.1 설치
+	RUN wget https://www.cpan.org/src/5.0/perl-5.26.1.tar.bz2 && \
+	tar -xjf perl-5.26.1.tar.bz2 && \
+	cd perl-5.26.1 && \
+	./Configure -des && \
+	make && \
+	make test && \
+	make install && \
+	cd .. && \
+	rm -rf perl-5.26.1 perl-5.26.1.tar.bz2
 
 # Perl 버전 확인
 RUN perl -v
