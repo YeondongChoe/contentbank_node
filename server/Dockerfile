@@ -3,6 +3,7 @@ FROM ubuntu:18.04
 
 # Node.js 16 저장소 추가 (18 대신 16 사용)
 RUN apt-get update && \
+		apt-get install dmidecode && \
     apt-get install -y curl && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 
