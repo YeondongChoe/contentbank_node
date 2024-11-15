@@ -15,7 +15,7 @@ import {
   saveImageToFTP,
   saveImageToS3,
 } from "./src/utils/imageUpload.js";
-import qnapiDreamRouter from "./routes/qnapi_dream.js"; // iTex
+import qnapiDreamRouter from "./routes/qnapi_dream_bak.js"; // iTex
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
