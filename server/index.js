@@ -187,8 +187,8 @@ function getActualStorageType(imgSaveTypeInt) {
 }
 
 // hml 다운로드
-import hml_download from "./routes/hml_download.js";
-app.post("/hml_download", hml_download);
+// import hml_download from "./routes/hml_download.js";
+// app.post("/hml_download", hml_download);
 
 // qnapi_dream 라우터 등록
 app.use("/qnapi_dream", qnapiDreamRouter);
