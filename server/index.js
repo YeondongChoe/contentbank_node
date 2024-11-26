@@ -186,7 +186,50 @@ function getActualStorageType(imgSaveTypeInt) {
   }
 }
 
+// hml 다운로드
+import hml_download from "./routes/hml_download.js";
+app.post("/hml_download", hml_download);
+
+// qnapi_dream 라우터 등록
 app.use("/qnapi_dream", qnapiDreamRouter);
+
+// upload_img 디렉토리를 외부에서 접근 가능하도록 설정(tinymce에서 이미지 업로드 시 저장 경로)
+app.use("/upload_img", express.static(path.join(__dirname, "upload_img")));
+
+const uploadImgDir = path.join(__dirname, "upload_img");
+
+if (!fs.existsSync(uploadImgDir)) {
+  fs.mkdirSync(uploadImgDir, { recursive: true });
+}
+
+// tinymce에서 이미지 업로드 시 처리
+app.post("/upload_img", upload.single("file"), (req, res) => {
+  try {
+    if (!req.file) {
+      throw new Error("File is missing");
+    }
+
+    const imgUUID = uuidv4();
+    const file_name = imgUUID + path.extname(req.file.originalname);
+    const year = new Date().getFullYear().toString();
+    const month = `0${new Date().getMonth() + 1}`.slice(-2);
+    const day = `0${new Date().getDate()}`.slice(-2);
+    const saveDir = path.join(uploadImgDir, year, month, day);
+
+    if (!fs.existsSync(saveDir)) {
+      fs.mkdirSync(saveDir, { recursive: true });
+    }
+
+    const savePath = path.join(saveDir, file_name);
+
+    fs.writeFileSync(savePath, req.file.buffer);
+
+    res.json({ imgURL: `/upload_img/${year}/${month}/${day}/${file_name}` });
+  } catch (error) {
+    console.error("Error processing upload:", error);
+    res.status(500).send("Error processing upload");
+  }
+});
 
 // Start server
 const startServer = async () => {
