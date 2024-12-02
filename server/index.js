@@ -14,6 +14,7 @@ import {
   saveImageLocally,
   saveImageToFTP,
   saveImageToS3,
+  saveMultiToS3,
 } from "./src/utils/imageUpload.js";
 // import qnapiDreamRouter from "./routes/qnapi_dream_bak.js"; // iTex
 import qnapiDreamRouter from "./routes/qnapi_dream.js"; // iTex
@@ -65,6 +66,11 @@ app.set("view engine", "ejs");
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/hml_images", express.static(path.join(__dirname, "hml_images")));
 
+app.use((req, res, next) => {
+  console.log("Content-Type:", req.headers["content-type"]);
+  next();
+});
+
 // Routes
 app.get("/", (req, res) => res.send("Hello world"));
 
@@ -88,7 +94,13 @@ app.post("/get-pdf", async (req, res) => {
 
 // File upload setup
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+// const upload = multer({ storage });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 예: 50MB 제한
+  },
+});
 
 // 저장시 이미지 저장(사용할 이미지)
 app.post("/uploadImage", upload.single("file"), async (req, res) => {
@@ -327,6 +339,29 @@ app.post("/upload_img", upload.single("file"), (req, res) => {
   } catch (error) {
     console.error("Error processing upload:", error);
     res.status(500).send("Error processing upload");
+  }
+});
+
+// 신고 파일 업로드
+app.post("/upload_report", upload.array("file", 10), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      throw new Error("No files were uploaded");
+    }
+
+    const results = await saveMultiToS3(req.files, s3Config, bucketName);
+
+    res.json({
+      message: "Files processed",
+      totalFiles: req.files.length,
+      results,
+    });
+  } catch (error) {
+    console.error("Error processing upload:", error);
+    res.status(500).json({
+      error: "Error processing upload",
+      details: error.message,
+    });
   }
 });
 
