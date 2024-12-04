@@ -107,7 +107,7 @@ app.post("/upload_img", upload.single("file"), async (req, res) => {
     let { img_save_type } = req.body;
 
     if (!img_save_type || !req.file) {
-      img_save_type = 3;
+      img_save_type = 1;
       // throw new Error('Missing required data');
     }
 
