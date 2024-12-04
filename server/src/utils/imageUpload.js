@@ -92,7 +92,7 @@ export const createS3Directory = async (s3, bucketName, dirPath) => {
  */
 export const saveImageToS3 = async (s3Config, bucketName, key, fileBuffer) => {
   const s3 = new AWS.S3(s3Config);
-  console.log("chchchchek!!");
+
   try {
     // Create directory structure first
     const dirPath = key.split("/").slice(0, -1).join("/");
@@ -106,7 +106,6 @@ export const saveImageToS3 = async (s3Config, bucketName, key, fileBuffer) => {
       Key: key,
       Body: fileBuffer,
       ACL: "public-read",
-      // png로 많이 전달될듯 합니다.(용량도 더 적어용 :) )
       ContentType: "image/jpeg", // Adjust based on file type if needed
     };
 
