@@ -127,7 +127,7 @@ export const handleS3Move = async (s3Config, bucketName, img_data) => {
                 imgUUID: uuidv4(),
                 imgURL: movedUrls.join(','),
                 message: "Some files failed to move",
-                actualStorage: "s3",
+                actualStorage: getActualStorageType(3),
                 error: firstError?.message || "Unknown error occurred"
             };
         }
@@ -136,7 +136,8 @@ export const handleS3Move = async (s3Config, bucketName, img_data) => {
             imgUUID: uuidv4(),
             imgURL: movedUrls.join(','),
             message: "Images moved successfully",
-            actualStorage: "s3"
+            actualStorage: getActualStorageType(3)
+
         };
 
     } catch (error) {
