@@ -265,7 +265,8 @@ app.post("/upload_report", upload.array("file", 10), async (req, res) => {
 
 // 편집툴에서 /upload_img 로 올린 이미지를 문항 저장을 할때 다시 한번 데이터를 옮기는 역활을 한다
 // 결국 /upload_img 는 임시저장 목적으로 사용 하는것
-app.post("/uploadImage", express.urlencoded({extended: true}), async (req, res) => {
+// app.post("/uploadImage", express.urlencoded({extended: true}), async (req, res) => {
+app.post("/uploadImage", upload.single("file"), async (req, res) => {
     try {
         const img_save_type = req.body.img_save_type;
         if (!img_save_type) {
