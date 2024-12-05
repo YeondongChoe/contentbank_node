@@ -289,7 +289,6 @@ app.post("/uploadImage", express.urlencoded({extended: true}), async (req, res) 
                 throw new Error(`Invalid img_save_type: ${img_save_type}`);
         }
 
-        // moveResult가 정의되지 않은 문제 해결
         if (!moveResult) {
             throw new Error("Move operation failed");
         }
