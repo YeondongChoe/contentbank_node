@@ -1,12 +1,16 @@
 import AWS from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 const getActualStorageType = (type) => {
-    switch(type) {
-        case 1: return 'local';
-        case 2: return 'ftp';
-        case 3: return 's3';
-        default: return 'local';
+    switch (type) {
+        case 1:
+            return 'local';
+        case 2:
+            return 'ftp';
+        case 3:
+            return 's3';
+        default:
+            return 'local';
     }
 };
 
@@ -18,6 +22,37 @@ export const handleFtpMove = async (img_data) => {
     throw new Error("FTP move not implemented");
 };
 
+// S3 디렉토리 생성 함수 추가
+const createS3Directory = async (s3, bucketName, dirPath) => {
+    try {
+        await s3.putObject({
+            Bucket: bucketName,
+            Key: `${dirPath}/`,
+            Body: ""
+        }).promise();
+        console.log(`Directory created in S3: ${dirPath}`);
+    } catch (error) {
+        console.error("Error creating directory in S3:", error);
+        throw error;
+    }
+};
+
+// S3 객체 존재 여부 확인 함수
+const checkS3ObjectExists = async (s3, bucketName, key) => {
+    try {
+        await s3.headObject({
+            Bucket: bucketName,
+            Key: key
+        }).promise();
+        return true;
+    } catch (error) {
+        if (error.code === 'NotFound' || error.code === 'NoSuchKey') {
+            return false;
+        }
+        throw error;
+    }
+};
+
 export const moveImageInS3 = async (s3Config, bucketName, sourceUrl) => {
     const s3 = new AWS.S3(s3Config);
 
@@ -26,13 +61,19 @@ export const moveImageInS3 = async (s3Config, bucketName, sourceUrl) => {
         const urlPath = new URL(sourceUrl.trim()).pathname;
         const sourceKey = urlPath.substring(1);
 
+        // 파일 존재 여부 확인
+        const exists = await checkS3ObjectExists(s3, bucketName, sourceKey);
+        if (!exists) {
+            throw new Error(`File not found in S3: ${sourceUrl}`);
+        }
+
         // 원본 경로에서 필요한 정보 추출
         const keyParts = sourceKey.split('/');
         const fileName = keyParts[keyParts.length - 1];
-        const [year, month, day] = keyParts.slice(-4, -1);  // 날짜 정보 추출
+        const [year, month, day] = keyParts.slice(-4, -1);
 
         // 새로운 경로 생성
-        const destinationKey = `move/${year}/${month}/${day}/${fileName}`;
+        const destinationKey = `upload/${year}/${month}/${day}/${fileName}`;
 
         // 디렉토리 구조 생성
         const dirPath = destinationKey.split("/").slice(0, -1).join("/");
@@ -43,9 +84,10 @@ export const moveImageInS3 = async (s3Config, bucketName, sourceUrl) => {
         // 객체 복사
         await s3.copyObject({
             Bucket: bucketName,
-            CopySource: `${bucketName}/${sourceKey}`,
+            CopySource: encodeURIComponent(`${bucketName}/${sourceKey}`),
             Key: destinationKey,
-            ACL: 'public-read'
+            ACL: 'public-read',
+            MetadataDirective: 'COPY'
         }).promise();
 
         // 원본 객체 삭제
@@ -54,7 +96,6 @@ export const moveImageInS3 = async (s3Config, bucketName, sourceUrl) => {
             Key: sourceKey
         }).promise();
 
-        // 새로운 URL 반환
         return `https://${bucketName}.s3.${s3Config.region}.amazonaws.com/${destinationKey}`;
 
     } catch (error) {
@@ -63,57 +104,43 @@ export const moveImageInS3 = async (s3Config, bucketName, sourceUrl) => {
     }
 };
 
-// S3 디렉토리 생성 함수
-export const createS3Directory = async (s3, bucketName, dirPath) => {
-    const params = {
-        Bucket: bucketName,
-        Key: `${dirPath}/`,
-        Body: "",
-    };
+export const handleS3Move = async (s3Config, bucketName, img_data) => {
+    const movedUrls = [];
+    let hasError = false;
+    let firstError = null;
 
     try {
-        await s3.putObject(params).promise();
-        console.log(`Directory created in S3: ${dirPath}`);
-    } catch (error) {
-        console.error("Error creating directory in S3:", error);
-        throw error;
-    }
-};
-
-export const handleS3Move = async (s3Config, bucketName, img_data) => {
-
-        const movedUrls = [];
-        const moveResults = [];
-
         for (const imageUrl of img_data) {
             try {
-                const { imgUUID, imgURL } = await moveImageInS3(s3Config, bucketName, imageUrl);
-                movedUrls.push(imgURL);
-                moveResults.push({
-                    success: true,
-                    imgURL
-                });
-
+                const newUrl = await moveImageInS3(s3Config, bucketName, imageUrl);
+                movedUrls.push(newUrl);
             } catch (error) {
-                console.error(`Error moving file ${imageUrl}:`, error);
-                moveResults.push({
-                    success: false,
-                    error: error.message
-                });
+                hasError = true;
+                firstError = firstError || error;
+                console.error(`Failed to move file ${imageUrl}:`, error);
             }
         }
 
-        // 모든 이동이 성공했는지 확인
-        const allSuccessful = moveResults.every(result => result.success);
-
-        if (!allSuccessful) {
-            throw new Error('Some files failed to move');
+        if (hasError) {
+            // 에러가 있더라도 성공한 이동 결과는 반환
+            return {
+                imgUUID: uuidv4(),
+                imgURL: movedUrls.join(','),
+                message: "Some files failed to move",
+                actualStorage: "s3",
+                error: firstError?.message || "Unknown error occurred"
+            };
         }
 
         return {
-            imgUUID: uuidv4(), // 전체 작업에 대한 단일 UUID
-            imgURL: movedUrls.join(','), // 모든 URL을 콤마로 구분하여 결합
+            imgUUID: uuidv4(),
+            imgURL: movedUrls.join(','),
             message: "Images moved successfully",
             actualStorage: "s3"
         };
-    };
+
+    } catch (error) {
+        console.error("Error in handleS3Move:", error);
+        throw error;
+    }
+};

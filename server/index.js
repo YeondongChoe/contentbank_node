@@ -265,31 +265,33 @@ app.post("/upload_report", upload.array("file", 10), async (req, res) => {
 
 // 편집툴에서 /upload_img 로 올린 이미지를 문항 저장을 할때 다시 한번 데이터를 옮기는 역활을 한다
 // 결국 /upload_img 는 임시저장 목적으로 사용 하는것
-app.post("/uploadImage", upload.single("file"), async (req, res) => {
+app.post("/uploadImage", express.urlencoded({extended: true}), async (req, res) => {
     try {
         const img_save_type = req.body.img_save_type;
         if (!img_save_type) {
             throw new Error("img_save_type is missing");
         }
 
-        const img_data = req.body.img_data.split(',');
-        let moveResults;
+        const img_data = req.body.img_data.split(',').map(url => url.trim());
+        let moveResult;
 
         switch (parseInt(img_save_type)) {
-            case 1: // Local storage
-                moveResults = await handleLocalMove(img_data);
+            case 1:
+                moveResult = await handleLocalMove(img_data);
                 break;
-
-            case 2: // FTP
-                moveResults = await handleFtpMove(img_data);
+            case 2:
+                moveResult = await handleFtpMove(img_data);
                 break;
-
-            case 3: // S3
-                moveResults = await handleS3Move(s3Config, bucketName, img_data);
+            case 3:
+                moveResult = await handleS3Move(s3Config, bucketName, img_data);
                 break;
-
             default:
                 throw new Error(`Invalid img_save_type: ${img_save_type}`);
+        }
+
+        // moveResult가 정의되지 않은 문제 해결
+        if (!moveResult) {
+            throw new Error("Move operation failed");
         }
 
         res.json(moveResult);
