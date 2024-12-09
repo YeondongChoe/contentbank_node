@@ -104,6 +104,31 @@ export const moveImageInS3 = async (s3Config, bucketName, sourceUrl) => {
     }
 };
 
+export const handleS3MoveList = async (s3Config, bucketName, imgData) => {
+    const results = [];
+
+    await Promise.allSettled(
+        imgData.map(async (imageUrl) => {
+            try {
+                const newUrl = await moveImageInS3(s3Config, bucketName, imageUrl);
+                results.push({
+                    imgUUID: uuidv4(),
+                    imgURL: newUrl,
+                    actualStorage: getActualStorageType(3)
+                });
+            } catch (error) {
+                console.error(`Failed to process image ${imageUrl}:`, error);
+            }
+        })
+    );
+
+    if (results.length === 0) {
+        throw new Error('No images were successfully processed');
+    }
+
+    return results;
+};
+
 export const handleS3Move = async (s3Config, bucketName, img_data) => {
     const movedUrls = [];
     let hasError = false;

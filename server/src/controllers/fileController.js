@@ -5,7 +5,7 @@ import {generatePDF} from '../utils/pdfGenerator.js';
 import {saveMultiToS3} from '../utils/imageUpload.js';
 import {getActualStorageType, handleStorageType} from '../utils/storageUtils.js';
 import {bucketName, s3Config} from '../../config/s3.js';
-import {handleFtpMove, handleLocalMove, handleS3Move} from "../handlers/moveHandler.js";
+import {handleFtpMove, handleLocalMove, handleS3Move, handleS3MoveList} from "../handlers/moveHandler.js";
 
 export const handleGetPdf = async (req, res) => {
     try {
@@ -128,7 +128,7 @@ export const handleImageUploadMove = async (req, res) => {
                 moveResult = await handleFtpMove(img_data);
                 break;
             case 3:
-                moveResult = await handleS3Move(s3Config, bucketName, img_data);
+                moveResult = await handleS3MoveList(s3Config, bucketName, img_data);
                 break;
             default:
                 throw new Error(`Invalid img_save_type: ${img_save_type}`);
