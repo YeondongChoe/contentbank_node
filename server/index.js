@@ -66,6 +66,11 @@ app.set("view engine", "ejs");
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/hml_images", express.static(path.join(__dirname, "hml_images")));
 
+app.use((req, res, next) => {
+  console.log("Content-Type:", req.headers["content-type"]);
+  next();
+});
+
 // Routes
 app.get("/", (req, res) => res.send("Hello world"));
 
@@ -89,190 +94,97 @@ app.post("/get-pdf", async (req, res) => {
 
 // File upload setup
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-// 저장시 이미지 저장(사용할 이미지)
-app.post("/uploadImage", upload.single("file"), async (req, res) => {
-  try {
-    const img_save_type = req.body.img_save_type;
-    // const img_save_path = req.body.save_path;
-    // console.log("img_save_type:", img_save_type);
-
-    if (!img_save_type) {
-      throw new Error("img_save_type is missing");
-    }
-
-    const img_data = req.body.img_data.split(",");
-    // console.log("img_data:", img_data);
-    //   throw new Error("File is missing");
-    // }
-
-    // img_save_type이 숫자인지 확인하기 위한 로그 추가
-    const imgSaveTypeInt = parseInt(img_save_type, 10);
-    // console.log("img_save_type (as integer):", imgSaveTypeInt);
-
-    const img_url_list = [];
-
-    for (const img of img_data) {
-      // console.log("img:", img);
-      const imgUUID = uuidv4();
-      const today = new Date();
-      const year = today.getFullYear().toString();
-      const month = (today.getMonth() + 1).toString().padStart(2, "0");
-      const day = today.getDate().toString().padStart(2, "0");
-      // const file_name = imgUUID + path.extname(req.file.originalname);
-      const file_name = imgUUID;
-
-      let imgURL = `/images/${year}/${month}/${day}/${file_name}`;
-      let savePath;
-
-      // 기존 경로 저장
-      const alreadyFilePath = img.split("/");
-      const alreadyFileName = alreadyFilePath.pop();
-      const extname = path.extname(alreadyFileName);
-      const alreadyFilePath_Day = alreadyFilePath.pop();
-      const alreadyFilePath_Month = alreadyFilePath.pop();
-      const alreadyFilePath_Year = alreadyFilePath.pop();
-      const alreadyFilePath_Dir = alreadyFilePath.pop();
-      const alreadyFilePath_Dir_Path = path.join(
-        alreadyFilePath_Dir,
-        alreadyFilePath_Year,
-        alreadyFilePath_Month,
-        alreadyFilePath_Day,
-        alreadyFileName
-      );
-
-      switch (imgSaveTypeInt) {
-        case 1:
-          savePath = path.join(
-            dream_img_save_dir,
-            year,
-            month,
-            day,
-            imgUUID + extname
-          );
-          // console.log("savePath (Local):", savePath);
-          // saveImageLocally(savePath, req.file.buffer);
-          saveImageLocally(savePath, alreadyFilePath_Dir_Path);
-          break;
-
-        case 2:
-          savePath = path.join(
-            dream_img_save_dir,
-            year,
-            month,
-            day,
-            imgUUID + path.extname(req.file.originalname)
-          );
-          console.log("savePath (FTP):", savePath);
-          saveImageToFTP(savePath, req.file.buffer);
-          break;
-
-        case 3:
-          key = `${year}/${month}/${day}/${imgUUID}${path.extname(
-            req.file.originalname
-          )}`;
-          console.log("key (S3):", key);
-          saveImageToS3(s3Config, bucketName, key, req.file.buffer);
-          imgURL = key;
-          break;
-
-        default:
-          throw new Error("Invalid save type");
-      }
-      img_url_list.push({ imgUUID, imgURL });
-    }
-    // console.log("img_url_list:", img_url_list);
-
-    res.json({ img_url_list });
-  } catch (error) {
-    console.error("Error processing upload:", error);
-    res.status(500).send("Error processing upload");
-  }
+// const upload = multer({ storage });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 예: 50MB 제한
+  },
 });
 
-// app.post("/upload_img", upload.single("file"), async (req, res) => {
-//   try {
-//     let { img_save_type } = req.body;
+app.post("/upload_img", upload.single("file"), async (req, res) => {
+  try {
+    let { img_save_type } = req.body;
 
-//     if (!img_save_type || !req.file) {
-//       img_save_type = 1;
-//       // throw new Error('Missing required data');
-//     }
+    if (!img_save_type || !req.file) {
+      img_save_type = 1;
+      // throw new Error('Missing required data');
+    }
 
-//     const imgSaveTypeInt = parseInt(img_save_type, 10);
-//     const imgUUID = uuidv4();
-//     const [year, month, day] = new Date()
-//       .toISOString()
-//       .split("T")[0]
-//       .split("-");
-//     const fileExtension = path.extname(req.file.originalname);
+    const imgSaveTypeInt = parseInt(img_save_type, 10);
+    const imgUUID = uuidv4();
+    const [year, month, day] = new Date()
+      .toISOString()
+      .split("T")[0]
+      .split("-");
+    const fileExtension = path.extname(req.file.originalname);
 
-//     const savePath = path.join(year, month, day, `${imgUUID}${fileExtension}`);
-//     let imgURL;
+    const savePath = path.join(year, month, day, `${imgUUID}${fileExtension}`);
+    let imgURL;
 
-//     switch (imgSaveTypeInt) {
-//       case 1:
-//         await saveImageLocally(
-//           path.join(__dirname, "images", savePath),
-//           req.file.buffer
-//         );
-//         imgURL = `/images/${savePath}`; // 로컬 저장 시 URL
-//         console.log("Image saved locally");
-//         break;
-//       case 2:
-//         if (isFtpConfigured) {
-//           await saveImageToFTP(ftpConfig, savePath, req.file.buffer);
-//           imgURL = `ftp://${ftpConfig.host}/${savePath}`; // FTP URL
-//           console.log("Image saved to FTP");
-//         } else {
-//           console.warn("FTP is not configured. Falling back to local storage.");
-//           await saveImageLocally(
-//             path.join(__dirname, "images", savePath),
-//             req.file.buffer
-//           );
-//           imgURL = `/images/${savePath}`; // 로컬 저장 시 URL (FTP 폴백)
-//           console.log("Image saved locally (FTP fallback)");
-//         }
-//         break;
-//       case 3:
-//         if (isS3Configured) {
-//           const s3Url = await saveImageToS3(
-//             s3Config,
-//             bucketName,
-//             savePath,
-//             req.file.buffer
-//           );
-//           imgURL = s3Url; // S3 URL
-//           console.log("Image saved to S3");
-//         } else {
-//           console.warn("S3 is not configured. Falling back to local storage.");
-//           await saveImageLocally(
-//             path.join(__dirname, "images", savePath),
-//             req.file.buffer
-//           );
-//           imgURL = `/images/${savePath}`; // 로컬 저장 시 URL (S3 폴백)
-//           console.log("Image saved locally (S3 fallback)");
-//         }
-//         break;
-//       default:
-//         throw new Error("Invalid save type");
-//     }
+    switch (imgSaveTypeInt) {
+      case 1:
+        await saveImageLocally(
+          path.join(__dirname, "images", savePath),
+          req.file.buffer
+        );
+        imgURL = `/images/${savePath}`; // 로컬 저장 시 URL
+        console.log("Image saved locally");
+        break;
+      case 2:
+        if (isFtpConfigured) {
+          await saveImageToFTP(ftpConfig, savePath, req.file.buffer);
+          imgURL = `ftp://${ftpConfig.host}/${savePath}`; // FTP URL
+          console.log("Image saved to FTP");
+        } else {
+          console.warn("FTP is not configured. Falling back to local storage.");
+          await saveImageLocally(
+            path.join(__dirname, "images", savePath),
+            req.file.buffer
+          );
+          imgURL = `/images/${savePath}`; // 로컬 저장 시 URL (FTP 폴백)
+          console.log("Image saved locally (FTP fallback)");
+        }
+        break;
+      case 3:
+        if (isS3Configured) {
+          const s3Path = `${year}/${month}/${day}/${imgUUID}${fileExtension}`;
+          const s3Url = await saveImageToS3(
+            s3Config,
+            bucketName,
+            s3Path,
+            req.file.buffer
+          );
+          imgURL = s3Url; // S3 URL
+          console.log("Image saved to S3");
+        } else {
+          console.warn("S3 is not configured. Falling back to local storage.");
+          await saveImageLocally(
+            path.join(__dirname, "images", savePath),
+            req.file.buffer
+          );
+          imgURL = `/images/${savePath}`; // 로컬 저장 시 URL (S3 폴백)
+          console.log("Image saved locally (S3 fallback)");
+        }
+        break;
+      default:
+        throw new Error("Invalid save type");
+    }
 
-//     res.json({
-//       imgUUID,
-//       imgURL,
-//       message: "Image uploaded successfully",
-//       actualStorage: getActualStorageType(imgSaveTypeInt),
-//     });
-//   } catch (error) {
-//     console.error("Error processing upload:", error);
-//     res.status(500).json({
-//       error: "Error processing upload",
-//       details: error.message,
-//     });
-//   }
-// });
+    res.json({
+      imgUUID,
+      imgURL,
+      message: "Image uploaded successfully",
+      actualStorage: getActualStorageType(imgSaveTypeInt),
+    });
+  } catch (error) {
+    console.error("Error processing upload:", error);
+    res.status(500).json({
+      error: "Error processing upload",
+      details: error.message,
+    });
+  }
+});
 
 function getActualStorageType(imgSaveTypeInt) {
   switch (imgSaveTypeInt) {
@@ -324,6 +236,29 @@ app.post("/upload_img", upload.single("file"), (req, res) => {
   } catch (error) {
     console.error("Error processing upload:", error);
     res.status(500).send("Error processing upload");
+  }
+});
+
+// 신고 파일 업로드
+app.post("/upload_report", upload.array("file", 10), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      throw new Error("No files were uploaded");
+    }
+
+    const results = await saveMultiToS3(req.files, s3Config, bucketName);
+
+    res.json({
+      message: "Files processed",
+      totalFiles: req.files.length,
+      results,
+    });
+  } catch (error) {
+    console.error("Error processing upload:", error);
+    res.status(500).json({
+      error: "Error processing upload",
+      details: error.message,
+    });
   }
 });
 
