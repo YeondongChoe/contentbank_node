@@ -6,6 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "nodemon --exec \"node --max-old-space-size=8192 index.js\"",
+    "local": "NODE_ENV=localhost node index.js",
+    "dev": "NODE_ENV=development node index.js",
+    "stage": "NODE_ENV=stage node index.js",
+    "prod": "NODE_ENV=production node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
