@@ -81,7 +81,6 @@ export const handleTinyMceUpload = async (req, res) => {
     if (!req.file) {
       throw new Error("File is missing");
     }
-    console.log("");
     const imgUUID = uuidv4();
     const file_name = imgUUID + path.extname(req.file.originalname);
     const year = new Date().getFullYear().toString();
