@@ -1,103 +1,71 @@
-const fs = require("fs");
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const generatePDF = require("./src/utils/pdfGenerator.js");
-const Eureka = require("eureka-js-client").Eureka; // Eureka 클라이언트 추가
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import path from "path";
+import fileRoutes from "./src/routes/fileRoutes.js";
+import { Eureka } from "eureka-js-client";
+import eurekaConfig from "./config/eureka.js";
+
+import qnapiDreamRouter from "./routes/qnapi_dream.js"; // iTex
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
+
+const port = process.env.PORT || 5050;
+
+// Eureka client setup
+const eurekaClient = new Eureka(eurekaConfig);
 
 const app = express();
-const port = 5050;
 
-// Eureka 클라이언트 설정
-const client = new Eureka({
-  instance: {
-    app: "file-service", // 서비스 이름
-    hostName: "file-service", // 서비스 호스트명
-    ipAddr: "127.0.0.1", // 서비스 IP 주소
-    port: {
-      $: port,
-      "@enabled": "true",
-    },
-    vipAddress: "file-service",
-    dataCenterInfo: {
-      "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
-      name: "MyOwn",
-    },
-  },
-  eureka: {
-    host: "210.124.177.35", // Eureka 서버 호스트
-    port: 8761, // Eureka 서버 포트
-    servicePath: "/eureka/apps/",
-  },
-});
-
-// Eureka 클라이언트 시작
-client.start((error) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("Eureka client started");
-  }
-});
-
-// 모든 요청에 대해 CORS 미들웨어 적용
-// app.use(
-//   cors({
-//     origin: true, // 실제 요청이 온 origin을 허용
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-//     credentials: true, // 자격 증명 허용
-//   })
-// );
-
-//app.use(bodyParser.json());
-
-// 요청 본문 크기 제한을 50MB로 설정
+// 미들웨어 설정
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("Hello worldd");
-});
+// 정적 파일 설정
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use(
+  "/hml_images",
+  express.static(path.join(__dirname, "public/hml_images"))
+);
+app.use(
+  "/upload_img",
+  express.static(path.join(__dirname, "public/upload_img"))
+);
+app.use(
+  "/uploadImage",
+  express.static(path.join(__dirname, "public/uploadImage"))
+);
 
-app.set("view engine", "ejs");
+// 라우트 설정
+app.use("/", fileRoutes);
+app.use("/qnapi_dream", qnapiDreamRouter);
 
-app.post("/get-pdf", async (req, res) => {
-  const { title, content, column, uploadDir, fileName } = req.body;
-  // 데이터 및 CSS 스타일
-  const data = {
-    title: title,
-    content: content,
-    column: column,
-    uploadDir: uploadDir,
-    fileName: fileName,
-  };
-  // 파일 저장할 디렉토리 경로
-  //const uploadDir = "/usr/share/nginx/html/CB";
+// Start server
+const startServer = async () => {
+  try {
+    await new Promise((resolve, reject) => {
+      eurekaClient.start((err) => (err ? reject(err) : resolve()));
+    });
+    console.log("Eureka client started");
 
-  // 디렉토리가 존재하지 않으면 생성
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
   }
+};
 
-  // PDF 생성 모듈 호출
-  const pdfBuffer = await generatePDF(data);
-
-  // 파일 저장 경로
-  const filePath = `${uploadDir}/${fileName}`;
-
-  // 파일 저장
-  fs.writeFile(filePath, pdfBuffer, (err) => {
-    if (err) {
-      console.error("파일 저장 중 오류 발생:", err);
-      res.status(500).send("파일 저장 중 오류가 발생했습니다.");
-    } else {
-      console.log("파일이 성공적으로 저장되었습니다:", filePath);
-      res.send("파일이 성공적으로 저장되었습니다.");
-    }
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+startServer();
