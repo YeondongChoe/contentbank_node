@@ -1,3 +1,6 @@
 .env
 .env.stageserver/.env
 server/routes/perl/config/s3config_hml.txt
+
+server/.env
+server/routes/perl/config/s3config_hml.txt
